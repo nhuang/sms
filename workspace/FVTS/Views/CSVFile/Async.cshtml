@@ -1,0 +1,22 @@
+﻿@{
+    ViewBag.Title = "Async";
+}
+
+<h2>Async</h2>
+<div class="configuration k-widget k-header" style="width: 800px">
+    <span class="infoHead">Information</span>
+    <p>
+        Upload File Informarion
+    </p>
+</div>
+
+<div style="width:100%">
+    @(Html.Kendo().Upload()
+        .Name("files")
+        .Async(async  => async 
+            .Save("Save", "CSVFile")
+            .Remove("Remove", "CSVFile")
+            .AutoUpload(true)
+        )
+    )
+</div>

@@ -1,0 +1,28 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace FVTS.Models
+{
+    public class ShiftRecordModels
+    {
+        public Nullable<int> volunteerId { get; set; }
+        public int recordId { get; set; }
+        public string teamName { get; set; }
+        public System.DateTime startOn { get; set; }
+        public Nullable<System.DateTime> endOn { get; set; }
+        public System.DateTime createOn { get; set; }
+        public string createBy { get; set; }
+        public System.DateTime modifiedOn { get; set; }
+        public string modifiedBy { get; set; }
+        public decimal earnedBucks { get; set; }
+        public decimal earnHours { get; set; }
+    }
+
+    public class EarnBucksModel
+    {
+        public decimal earnedTotalBucks { get; set; }
+        public decimal earnedTotalHours { get; set; }
+    }
+}

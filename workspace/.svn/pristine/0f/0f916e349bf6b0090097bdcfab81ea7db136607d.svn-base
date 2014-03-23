@@ -1,0 +1,95 @@
+﻿@model IEnumerable<FVTS.Models.ShiftRecordModels>
+
+<strong>Shift History</strong>
+@{
+
+    var roles = (SimpleRoleProvider)Roles.Provider;
+
+    String PlateMessage = "";
+    if (ViewBag.PlateMessage != null)
+    {
+        PlateMessage = ViewBag.PlateMessage;
+    }
+}
+
+<h5 style="color: red">@PlateMessage</h5>
+
+@(Html.Kendo().Grid(Model)
+    .Name("ShiftRecords")
+    .Columns(columns =>
+    {
+        columns.Bound(e => e.volunteerId).Visible(false);
+        columns.Bound(e => e.recordId).Visible(false);
+        columns.Bound(e => e.teamName).Width(200).ClientTemplate("<strong>#: teamName #</strong>");
+        columns.Bound(e => e.startOn).Format("{0:MMM dd yyyy HH:mm}");
+        columns.Bound(e => e.endOn).Format("{0:MMM dd yyyy HH:mm}");
+        columns.Bound(e => e.earnedBucks).Format("{0:C}");
+        columns.Bound(e => e.earnHours);
+        if (WebSecurity.IsAuthenticated && (roles.GetRolesForUser(WebSecurity.CurrentUserName).Contains("Administrator") || roles.GetRolesForUser(WebSecurity.CurrentUserName).Contains("Coordinator")))
+        {
+            columns.Command(command =>
+            {
+                command.Edit();
+            }).Width(200);
+        }
+    })
+    .Editable(editable => editable.Mode(GridEditMode.InLine))
+    .HtmlAttributes(new { style = "height: 400px" })
+    .Pageable(pager => pager
+        .Refresh(true)
+     )
+    .Sortable()
+    .Filterable()
+    .Groupable()
+    .Scrollable()
+    .Reorderable(reorder => reorder.Columns(true))
+    .Selectable(selectable => selectable.Mode(GridSelectionMode.Single))
+    .Resizable(resize => resize.Columns(true))
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .ServerOperation(true)
+        .Sort(sort =>
+        {
+            // Sort by UnitsInStock in descending order
+            sort.Add(p => p.recordId).Descending();
+        })
+        .Events(events => events.Error("error_handler"))
+        .Model(model =>
+            {
+                //The unique identifier (primary key) of the model is the ProductID property
+                model.Id(p => p.recordId);
+                // Declare a model field and make it readonly
+                model.Field(p => p.earnedBucks).Editable(false);
+                model.Field(p => p.earnHours).Editable(false);
+            })
+        .Read("ShiftRecord_Read", "Volunteer")
+        .Update("ShiftRecord_Update", "Volunteer").Events(events => events.Sync("end_handler"))
+    ).ColumnMenu()
+
+)
+
+<script type="text/javascript">
+    var chaged = false;
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+
+    function end_handler(e) {
+        alert("Updated!");
+        refresh_handler();
+    }
+
+    function refresh_handler() {
+        $("#ShiftRecords").data("kendoGrid").dataSource.read();
+    }
+</script>

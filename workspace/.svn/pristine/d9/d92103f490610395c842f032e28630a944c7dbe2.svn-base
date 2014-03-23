@@ -1,0 +1,77 @@
+﻿@model IEnumerable<FVTS.Models.UserProfile>
+
+@{
+    ViewBag.Title = "System User List";
+}
+<a href="~/Account/Register" class="k-button">New User</a>
+<a href="~/User/ResetPassword" class="k-button">Reset Password</a>
+
+@(Html.Kendo().Grid(Model)
+    .Name("User")
+    .Columns(columns =>
+    {
+        columns.Bound(u => u.UserId).Visible(false);
+        columns.Bound(u => u.UserName);
+        columns.Bound(u => u.FullName);
+        columns.Bound(u => u.Administrator).Width(100);
+        columns.Bound(u => u.Coordinator).Width(100);
+        columns.Command(command => { command.Custom("Password").Click("resetPassword"); }).Title("Function");
+    })
+   .ToolBar(toolbar =>
+   {
+       //toolbar.Create();
+       toolbar.Save();
+   })
+    .Editable(editable => editable.Mode(GridEditMode.InCell))
+    .HtmlAttributes(new { style = "height: 450px" })
+    .Pageable()
+    .Sortable()
+    .Filterable()
+    .Scrollable()
+    .Reorderable(reorder => reorder.Columns(true))
+    .Selectable(selectable => selectable.Mode(GridSelectionMode.Single))
+    .Resizable(resize => resize.Columns(true))
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Batch(true)
+        .ServerOperation(false)
+        .Events(events => events.Error("error_handler"))
+         .Model(model =>
+            {
+                //The unique identifier (primary key) of the model is the ProductID property
+                model.Id(v => v.UserId);
+                // Declare a model field and optionally specify its default value (used when a new model instance is created)
+                model.Field(v => v.UserName).Editable(false);
+            })
+        .Create("Editing_Create", "User")
+        .Read("Editing_Read", "User")
+        .Update("Editing_Update", "User")
+        // .Destroy("Editing_Destroy", "User")
+    ).ColumnMenu())
+
+
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+
+
+    function resetPassword(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        var id = dataItem.UserId;
+        window.location.href = "@Url.Action("ResetPassword", "User")" + "/" + id;
+    }
+
+</script>

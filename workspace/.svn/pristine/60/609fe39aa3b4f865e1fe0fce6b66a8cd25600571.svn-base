@@ -1,0 +1,21 @@
+﻿@{
+    ViewBag.Title = "About";
+}
+
+<div>
+
+    <h1>About Fringe Theatre Adventures</h1>
+    <p>From its grassroots beginnings as Chinook Touring theatre in 1980, Fringe Theatre Adventures (FTA) is a community recognized for theatre evolution. FTA produces the <a href="http://fringetheatreadventures.ca/festival.php">Edmonton International Fringe Theatre Festival</a> and showcases theatre year-round in our south side performance arts facility, the <a href="http://fringetheatreadventures.ca/tab.php">TransAlta Arts Barns</a>.</p>
+    <h2>Our Mandate</h2>
+    <p><strong>Fringe Theatre Adventures is a community recognized for theatre evolution. Fringe Theatre Adventures is dedicated to the creation of theatre that challenges and celebrates the cultural fabric of our communities, and provides a home for developing new and emerging artists, audiences and forums.</strong></p>
+    <p>The Edmonton International Fringe Theatre Festival is a founding member of the <strong><a href="http://www.fringefestivals.com/" target="_blank">Canadian Association of Fringe Festivals</a></strong>
+        <img src="http://fringetheatreadventures.ca/images/icons/external_link.png" width="12" height="12" alt="External link" title="External link" />
+        (CAFF). CAFF has established a set of guidelines and philosophies to which each Fringe Festival must adhere for Fringe Indoor Theatre:</p>
+    <ul>
+        <li>Participation in the Festival is determined by a non-juried process;</li>
+        <li>Participants receive 100% of the ticketed box office receipts for their performances;</li>
+        <li>Fringe Festival producers have no control over the artistic content of performances;</li>
+        <li>Fringes should provide accessible opportunities for audiences and artists to participate.</li>
+    </ul>
+
+</div>

@@ -1,0 +1,273 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="FVTSModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="FVTSEntities" p1:LazyLoadingEnabled="true">
+    <EntitySet Name="Definitions" EntityType="FVTSModel.Definition" />
+    <EntitySet Name="EmergencyContacts" EntityType="FVTSModel.EmergencyContact" />
+    <EntitySet Name="Locations" EntityType="FVTSModel.Location" />
+    <EntitySet Name="ShiftRecords" EntityType="FVTSModel.ShiftRecord" />
+    <EntitySet Name="sysdiagrams" EntityType="FVTSModel.sysdiagram" />
+    <EntitySet Name="UserProfiles" EntityType="FVTSModel.UserProfile" />
+    <EntitySet Name="Volunteers" EntityType="FVTSModel.Volunteer" />
+    <EntitySet Name="webpages_Membership" EntityType="FVTSModel.webpages_Membership" />
+    <EntitySet Name="webpages_OAuthMembership" EntityType="FVTSModel.webpages_OAuthMembership" />
+    <EntitySet Name="webpages_Roles" EntityType="FVTSModel.webpages_Roles" />
+    <AssociationSet Name="FK_SHIFTREC_TEAM_DEFINITI" Association="FVTSModel.FK_SHIFTREC_TEAM_DEFINITI">
+      <End Role="Definition" EntitySet="Definitions" />
+      <End Role="ShiftRecord" EntitySet="ShiftRecords" />
+    </AssociationSet>
+    <AssociationSet Name="FK_EMERGENC_REFERENCE_VOLUNTEE" Association="FVTSModel.FK_EMERGENC_REFERENCE_VOLUNTEE">
+      <End Role="Volunteer" EntitySet="Volunteers" />
+      <End Role="EmergencyContact" EntitySet="EmergencyContacts" />
+    </AssociationSet>
+    <AssociationSet Name="FK_LOCATION_REFERENCE_EMERGENC" Association="FVTSModel.FK_LOCATION_REFERENCE_EMERGENC">
+      <End Role="EmergencyContact" EntitySet="EmergencyContacts" />
+      <End Role="Location" EntitySet="Locations" />
+    </AssociationSet>
+    <AssociationSet Name="FK_LOCATION_REFERENCE_VOLUNTEE" Association="FVTSModel.FK_LOCATION_REFERENCE_VOLUNTEE">
+      <End Role="Volunteer" EntitySet="Volunteers" />
+      <End Role="Location" EntitySet="Locations" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SHIFTREC_RECORDS_VOLUNTEE" Association="FVTSModel.FK_SHIFTREC_RECORDS_VOLUNTEE">
+      <End Role="Volunteer" EntitySet="Volunteers" />
+      <End Role="ShiftRecord" EntitySet="ShiftRecords" />
+    </AssociationSet>
+    <AssociationSet Name="FK_WEBPAGES_MEMBERSHI_USERPROF" Association="FVTSModel.FK_WEBPAGES_MEMBERSHI_USERPROF">
+      <End Role="UserProfile" EntitySet="UserProfiles" />
+      <End Role="webpages_Membership" EntitySet="webpages_Membership" />
+    </AssociationSet>
+    <AssociationSet Name="FK_WEBPAGES_USERID_USERPROF" Association="FVTSModel.FK_WEBPAGES_USERID_USERPROF">
+      <End Role="UserProfile" EntitySet="UserProfiles" />
+      <End Role="webpages_OAuthMembership" EntitySet="webpages_OAuthMembership" />
+    </AssociationSet>
+    <AssociationSet Name="webpages_UsersInRoles" Association="FVTSModel.webpages_UsersInRoles">
+      <End Role="webpages_Roles" EntitySet="webpages_Roles" />
+      <End Role="UserProfile" EntitySet="UserProfiles" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Definition">
+    <Key>
+      <PropertyRef Name="definitionId" />
+    </Key>
+    <Property Name="definitionId" Type="Int32" Nullable="false" />
+    <Property Name="displayName" Type="String" Nullable="false" MaxLength="1024" Unicode="true" FixedLength="false" />
+    <Property Name="keyName" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
+    <Property Name="keyValue" Type="String" Nullable="false" MaxLength="1024" Unicode="true" FixedLength="false" />
+    <NavigationProperty Name="ShiftRecords" Relationship="FVTSModel.FK_SHIFTREC_TEAM_DEFINITI" FromRole="Definition" ToRole="ShiftRecord" />
+  </EntityType>
+  <EntityType Name="EmergencyContact">
+    <Key>
+      <PropertyRef Name="contactId" />
+    </Key>
+    <Property Name="contactId" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Name="volunteerId" Type="Int32" />
+    <Property Name="firstName" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+    <Property Name="lastName" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+    <Property Name="relationship" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+    <Property Name="primaryPhone" Type="String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false" />
+    <Property Name="otherPhone" Type="String" MaxLength="20" Unicode="true" FixedLength="false" />
+    <NavigationProperty Name="Volunteer" Relationship="FVTSModel.FK_EMERGENC_REFERENCE_VOLUNTEE" FromRole="EmergencyContact" ToRole="Volunteer" />
+    <NavigationProperty Name="Locations" Relationship="FVTSModel.FK_LOCATION_REFERENCE_EMERGENC" FromRole="EmergencyContact" ToRole="Location" />
+  </EntityType>
+  <EntityType Name="Location">
+    <Key>
+      <PropertyRef Name="locationId" />
+    </Key>
+    <Property Name="locationId" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Name="volunteerId" Type="Int32" />
+    <Property Name="contactId" Type="Int32" />
+    <Property Name="description" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+    <Property Name="address" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+    <Property Name="city" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+    <Property Name="province" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+    <Property Name="country" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+    <Property Name="postalcode" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+    <NavigationProperty Name="EmergencyContact" Relationship="FVTSModel.FK_LOCATION_REFERENCE_EMERGENC" FromRole="Location" ToRole="EmergencyContact" />
+    <NavigationProperty Name="Volunteer" Relationship="FVTSModel.FK_LOCATION_REFERENCE_VOLUNTEE" FromRole="Location" ToRole="Volunteer" />
+  </EntityType>
+  <EntityType Name="ShiftRecord">
+    <Key>
+      <PropertyRef Name="recordId" />
+    </Key>
+    <Property Name="volunteerId" Type="Int32" />
+    <Property Name="recordId" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Name="teamId" Type="Int32" />
+    <Property Name="startOn" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="endOn" Type="DateTime" Precision="3" />
+    <Property Name="createOn" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="createBy" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="modifiedOn" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="modifiedBy" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="earnedBucks" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+    <NavigationProperty Name="Definition" Relationship="FVTSModel.FK_SHIFTREC_TEAM_DEFINITI" FromRole="ShiftRecord" ToRole="Definition" />
+    <NavigationProperty Name="Volunteer" Relationship="FVTSModel.FK_SHIFTREC_RECORDS_VOLUNTEE" FromRole="ShiftRecord" ToRole="Volunteer" />
+  </EntityType>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" Nullable="false" MaxLength="128" Unicode="true" FixedLength="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="UserProfile">
+    <Key>
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="UserId" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Name="UserName" Type="String" MaxLength="20" Unicode="true" FixedLength="false" />
+    <Property Name="Email" Type="String" MaxLength="256" Unicode="true" FixedLength="false" />
+    <Property Name="Phone" Type="String" MaxLength="20" Unicode="true" FixedLength="false" />
+    <Property Name="FullName" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+    <NavigationProperty Name="webpages_Membership" Relationship="FVTSModel.FK_WEBPAGES_MEMBERSHI_USERPROF" FromRole="UserProfile" ToRole="webpages_Membership" />
+    <NavigationProperty Name="webpages_OAuthMembership" Relationship="FVTSModel.FK_WEBPAGES_USERID_USERPROF" FromRole="UserProfile" ToRole="webpages_OAuthMembership" />
+    <NavigationProperty Name="webpages_Roles" Relationship="FVTSModel.webpages_UsersInRoles" FromRole="UserProfile" ToRole="webpages_Roles" />
+  </EntityType>
+  <EntityType Name="Volunteer">
+    <Key>
+      <PropertyRef Name="volunteerId" />
+    </Key>
+    <Property Name="volunteerId" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Name="firstName" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+    <Property Name="lastName" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+    <Property Name="nickName" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+    <Property Name="birthday" Type="DateTime" Precision="0" />
+    <Property Name="gender" Type="String" Nullable="false" MaxLength="2" Unicode="false" FixedLength="false" />
+    <Property Name="status" Type="String" Nullable="false" MaxLength="2" Unicode="false" FixedLength="false" />
+    <Property Name="primaryPhone" Type="String" Nullable="false" MaxLength="20" Unicode="true" FixedLength="false" />
+    <Property Name="otherPhone" Type="String" MaxLength="20" Unicode="true" FixedLength="false" />
+    <Property Name="createOn" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="createBy" Type="String" Nullable="false" MaxLength="256" Unicode="true" FixedLength="false" />
+    <Property Name="modifiedOn" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="modifiedBy" Type="String" MaxLength="256" Unicode="true" FixedLength="false" />
+    <Property Name="activatedOn" Type="DateTime" Precision="3" />
+    <Property Name="deactivatedOn" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="EmergencyContacts" Relationship="FVTSModel.FK_EMERGENC_REFERENCE_VOLUNTEE" FromRole="Volunteer" ToRole="EmergencyContact" />
+    <NavigationProperty Name="Locations" Relationship="FVTSModel.FK_LOCATION_REFERENCE_VOLUNTEE" FromRole="Volunteer" ToRole="Location" />
+    <NavigationProperty Name="ShiftRecords" Relationship="FVTSModel.FK_SHIFTREC_RECORDS_VOLUNTEE" FromRole="Volunteer" ToRole="ShiftRecord" />
+  </EntityType>
+  <EntityType Name="webpages_Membership">
+    <Key>
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <Property Name="CreateDate" Type="DateTime" Precision="3" />
+    <Property Name="ConfirmationToken" Type="String" MaxLength="128" Unicode="true" FixedLength="false" />
+    <Property Name="IsConfirmed" Type="Boolean" />
+    <Property Name="LastPasswordFailureDate" Type="DateTime" Precision="3" />
+    <Property Name="PasswordFailuresSinceLastSuccess" Type="Int32" Nullable="false" />
+    <Property Name="Password" Type="String" Nullable="false" MaxLength="128" Unicode="true" FixedLength="false" />
+    <Property Name="PasswordChangedDate" Type="DateTime" Precision="3" />
+    <Property Name="PasswordSalt" Type="String" Nullable="false" MaxLength="128" Unicode="true" FixedLength="false" />
+    <Property Name="PasswordVerificationToken" Type="String" MaxLength="128" Unicode="true" FixedLength="false" />
+    <Property Name="PasswordVerificationTokenExpirationDate" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="UserProfile" Relationship="FVTSModel.FK_WEBPAGES_MEMBERSHI_USERPROF" FromRole="webpages_Membership" ToRole="UserProfile" />
+  </EntityType>
+  <EntityType Name="webpages_OAuthMembership">
+    <Key>
+      <PropertyRef Name="Provider" />
+      <PropertyRef Name="ProviderUserId" />
+    </Key>
+    <Property Name="Provider" Type="String" Nullable="false" MaxLength="30" Unicode="true" FixedLength="false" />
+    <Property Name="ProviderUserId" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
+    <Property Name="UserId" Type="Int32" Nullable="false" />
+    <NavigationProperty Name="UserProfile" Relationship="FVTSModel.FK_WEBPAGES_USERID_USERPROF" FromRole="webpages_OAuthMembership" ToRole="UserProfile" />
+  </EntityType>
+  <EntityType Name="webpages_Roles">
+    <Key>
+      <PropertyRef Name="RoleId" />
+    </Key>
+    <Property Name="RoleId" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+    <Property Name="RoleName" Type="String" Nullable="false" MaxLength="256" Unicode="true" FixedLength="false" />
+    <NavigationProperty Name="UserProfiles" Relationship="FVTSModel.webpages_UsersInRoles" FromRole="webpages_Roles" ToRole="UserProfile" />
+  </EntityType>
+  <Association Name="FK_SHIFTREC_TEAM_DEFINITI">
+    <End Role="Definition" Type="FVTSModel.Definition" Multiplicity="0..1" />
+    <End Role="ShiftRecord" Type="FVTSModel.ShiftRecord" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Definition">
+        <PropertyRef Name="definitionId" />
+      </Principal>
+      <Dependent Role="ShiftRecord">
+        <PropertyRef Name="teamId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_EMERGENC_REFERENCE_VOLUNTEE">
+    <End Role="Volunteer" Type="FVTSModel.Volunteer" Multiplicity="0..1" />
+    <End Role="EmergencyContact" Type="FVTSModel.EmergencyContact" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Volunteer">
+        <PropertyRef Name="volunteerId" />
+      </Principal>
+      <Dependent Role="EmergencyContact">
+        <PropertyRef Name="volunteerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_LOCATION_REFERENCE_EMERGENC">
+    <End Role="EmergencyContact" Type="FVTSModel.EmergencyContact" Multiplicity="0..1" />
+    <End Role="Location" Type="FVTSModel.Location" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="EmergencyContact">
+        <PropertyRef Name="contactId" />
+      </Principal>
+      <Dependent Role="Location">
+        <PropertyRef Name="contactId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_LOCATION_REFERENCE_VOLUNTEE">
+    <End Role="Volunteer" Type="FVTSModel.Volunteer" Multiplicity="0..1" />
+    <End Role="Location" Type="FVTSModel.Location" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Volunteer">
+        <PropertyRef Name="volunteerId" />
+      </Principal>
+      <Dependent Role="Location">
+        <PropertyRef Name="volunteerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SHIFTREC_RECORDS_VOLUNTEE">
+    <End Role="Volunteer" Type="FVTSModel.Volunteer" Multiplicity="0..1" />
+    <End Role="ShiftRecord" Type="FVTSModel.ShiftRecord" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Volunteer">
+        <PropertyRef Name="volunteerId" />
+      </Principal>
+      <Dependent Role="ShiftRecord">
+        <PropertyRef Name="volunteerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_WEBPAGES_MEMBERSHI_USERPROF">
+    <End Role="UserProfile" Type="FVTSModel.UserProfile" Multiplicity="1" />
+    <End Role="webpages_Membership" Type="FVTSModel.webpages_Membership" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="UserProfile">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="webpages_Membership">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_WEBPAGES_USERID_USERPROF">
+    <End Role="UserProfile" Type="FVTSModel.UserProfile" Multiplicity="1" />
+    <End Role="webpages_OAuthMembership" Type="FVTSModel.webpages_OAuthMembership" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserProfile">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="webpages_OAuthMembership">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="webpages_UsersInRoles">
+    <End Role="webpages_Roles" Type="FVTSModel.webpages_Roles" Multiplicity="*" />
+    <End Role="UserProfile" Type="FVTSModel.UserProfile" Multiplicity="*" />
+  </Association>
+</Schema>

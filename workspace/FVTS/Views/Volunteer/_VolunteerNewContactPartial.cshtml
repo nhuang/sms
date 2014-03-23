@@ -1,0 +1,42 @@
+﻿@using FVTS.Models;
+@model FVTS.Models.VolunteerContactModel
+
+<h4>Volunteer New Contact</h4>
+
+@using (Html.BeginForm("CreateNewContactForVolunteer", "Volunteer"))
+{ 
+    @Html.ValidationSummary(true)
+
+    <input type="hidden" name="volunteerId" value='@Model.volunteerId' />
+    
+    <table style="width: 100%">
+        <tr>
+            <td>@Html.LabelFor(model => model.relationship)</td>
+            <td>
+                <input id="relationship" name="relationship" required class="k-textbox" type="text" />
+            </td>
+            <td>@Html.LabelFor(model => model.contactName)</td>
+            <td>
+                <input id="contactName" name="contactName" required class="k-textbox" type="text" />
+            </td>
+        </tr>
+        <tr>
+            <td>@Html.LabelFor(model => model.emergencyPhone)</td>
+            <td>
+                <input class="k-textbox" id="emergencyPhone" name="emergencyPhone" required type="tel" value="" /></td>
+            <td>@Html.LabelFor(model => model.comment)</td>
+            <td rowspan="2">
+                <input class="k-textbox" id="comment" name="comment" type="text" value="" /></td>
+            <td>
+                <input type="submit" class="k-button" value="New Contact" />
+
+            </td>
+        </tr>
+    </table>
+}
+
+<script type="text/javascript">
+    jQuery(function ($) {
+        $("#emergencyPhone").mask("(999) 999-9999");
+    });
+</script>

@@ -1,0 +1,14 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<div>
+    <div class="float-left" style="width: 700px">
+        <img src="/Images/aatb_banner.jpg" width="700px;"/>
+    </div>
+</div>
+<div class="float-right">
+
+    @(Html.Kendo().Calendar()
+        .Name("calendar")
+    )
+</div>

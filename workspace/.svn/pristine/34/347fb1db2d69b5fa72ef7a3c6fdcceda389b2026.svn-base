@@ -1,0 +1,68 @@
+﻿@using FVTS.Models;
+@model IEnumerable<FVTS.Models.ShiftRecordModels>
+
+@{
+    ViewBag.Title = "VolunteerHistory";
+    Volunteer volunteer = ViewBag.Volunteer;
+
+    var session = HttpContext.Current.Session;
+    if (session["VolunteerId"] == null)
+    {
+        Session.Add("VolunteerId", volunteer.volunteerId);
+    }
+    else
+    {
+        session["VolunteerId"] = volunteer.volunteerId;
+    }
+    ShiftRecordModels newShiftRecord = new ShiftRecordModels();
+    newShiftRecord.volunteerId = volunteer.volunteerId;
+    
+}
+<a href="../" class="k-button">General Search</a>
+<a href="../SearchByCode" class="k-button">Qucik Sign In/Out</a>
+
+@{
+    string constituentCode = (String.IsNullOrEmpty(volunteer.constituentCode) == true ? "Walk In" : volunteer.constituentCode);
+}
+<h3>Volunteer Shift - @constituentCode
+    @{
+        string message = ViewBag.Message;
+        if (message.Trim().Length > 0)
+        { 
+        <strong style="color: red">@ViewBag.Message</strong>
+        }
+    }
+</h3>
+
+<table style="width: 100%">
+    <tr>
+        <td><strong>@volunteer.firstName,@volunteer.lastName (@volunteer.gender)</strong></td>
+        <td>Orientation:<strong> @String.Format("{0:MMMM dd yyyy}", @volunteer.orientation) </strong></td>
+        <td>Transit Pass:<strong> @String.Format("{0:MMMM dd yyyy}", @volunteer.transitPass) </strong></td>
+    </tr>
+    <tr>
+        <td>Home Phone: <strong>@volunteer.homePhone </strong></td>
+        <td>Cell Phone:  <strong>@volunteer.cellPhone </strong></td>
+        <td>@ViewBag.EarnedTotalBucks bucks - @ViewBag.EarnedTotalHours hours
+            @{
+                int pinHours = 20;
+                int earnedHours = (int)ViewBag.EarnedTotalHours;
+
+                if (earnedHours >= pinHours)
+                { 
+                <br />
+                <strong style="color: red">Volunteer has received their pin</strong>
+                } 
+            }
+        </td>
+    </tr>
+</table>
+
+@{
+    ShiftRecord lastRecord = ViewBag.LastRecord;
+    
+    <div>@Html.Partial("_VolunteerEditShifPartial", @lastRecord)</div>
+  
+    
+}
+<div>@Html.Partial("_VolunteerHistoryEditPartial", @Model)</div>

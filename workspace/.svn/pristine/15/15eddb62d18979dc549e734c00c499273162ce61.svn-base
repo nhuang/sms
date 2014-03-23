@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="FVTSModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="FVTSModelStoreContainer">
+    <EntitySet Name="Definition" EntityType="FVTSModel.Store.Definition" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="EmergencyContact" EntityType="FVTSModel.Store.EmergencyContact" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Location" EntityType="FVTSModel.Store.Location" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ShiftRecord" EntityType="FVTSModel.Store.ShiftRecord" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Volunteer" EntityType="FVTSModel.Store.Volunteer" store:Type="Tables" Schema="dbo" />
+  </EntityContainer>
+  <EntityType Name="Definition">
+    <Key>
+      <PropertyRef Name="definitionId" />
+    </Key>
+    <Property Name="definitionId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="displayName" Type="nvarchar" Nullable="false" MaxLength="100" />
+    <Property Name="keyName" Type="nvarchar" Nullable="false" MaxLength="100" />
+    <Property Name="keyValue" Type="nvarchar" Nullable="false" MaxLength="100" />
+    <Property Name="keyGroup" Type="nvarchar" Nullable="false" MaxLength="100" />
+    <Property Name="sequence" Type="int" />
+  </EntityType>
+  <EntityType Name="EmergencyContact">
+    <Key>
+      <PropertyRef Name="contactId" />
+    </Key>
+    <Property Name="contactId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="volunteerId" Type="int" />
+    <Property Name="firstName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="lastName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="relationship" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="emergencyPhone" Type="nvarchar" Nullable="false" MaxLength="20" />
+    <Property Name="comment" Type="nvarchar" MaxLength="2048" />
+    <Property Name="createDate" Type="date" />
+  </EntityType>
+  <EntityType Name="Location">
+    <Key>
+      <PropertyRef Name="locationId" />
+    </Key>
+    <Property Name="locationId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="volunteerId" Type="int" />
+    <Property Name="contactId" Type="int" />
+    <Property Name="locationType" Type="nvarchar" MaxLength="50" />
+    <Property Name="address" Type="nvarchar" MaxLength="100" />
+    <Property Name="city" Type="nvarchar" MaxLength="100" />
+    <Property Name="province" Type="nvarchar" MaxLength="100" />
+    <Property Name="postalcode" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="ShiftRecord">
+    <Key>
+      <PropertyRef Name="recordId" />
+    </Key>
+    <Property Name="volunteerId" Type="int" />
+    <Property Name="recordId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="teamName" Type="nvarchar" MaxLength="100" />
+    <Property Name="startOn" Type="datetime" Nullable="false" />
+    <Property Name="endOn" Type="datetime" />
+    <Property Name="createOn" Type="datetime" Nullable="false" />
+    <Property Name="createBy" Type="nvarchar" Nullable="false" MaxLength="100" />
+    <Property Name="modifiedOn" Type="datetime" Nullable="false" />
+    <Property Name="modifiedBy" Type="nvarchar" Nullable="false" MaxLength="100" />
+    <Property Name="earnedBucks" Type="numeric" Nullable="false" Precision="10" Scale="2" />
+    <Property Name="earnHours" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Volunteer">
+    <Key>
+      <PropertyRef Name="volunteerId" />
+    </Key>
+    <Property Name="volunteerId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="constituentCode" Type="nvarchar" Nullable="false" MaxLength="10" />
+    <Property Name="title" Type="nvarchar" MaxLength="10" />
+    <Property Name="firstName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="lastName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="nickName" Type="nvarchar" MaxLength="50" />
+    <Property Name="birthday" Type="date" />
+    <Property Name="status" Type="nvarchar" MaxLength="2" />
+    <Property Name="gender" Type="nvarchar" MaxLength="2" />
+    <Property Name="homePhone" Type="nvarchar" MaxLength="20" />
+    <Property Name="cellPhone" Type="nvarchar" MaxLength="20" />
+    <Property Name="createOn" Type="datetime" Nullable="false" />
+    <Property Name="createBy" Type="nvarchar" Nullable="false" MaxLength="256" />
+    <Property Name="modifiedOn" Type="datetime" Nullable="false" />
+    <Property Name="modifiedBy" Type="nvarchar" MaxLength="256" />
+    <Property Name="activatedOn" Type="datetime" />
+    <Property Name="deactivatedOn" Type="datetime" />
+    <Property Name="note" Type="nvarchar" />
+    <Property Name="token" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+</Schema>

@@ -1,0 +1,292 @@
+﻿@model FVTS.Models.VolunteerCreateModel
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Create</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    <div class="float-left" style="width: 200px;">
+        <h3>Voluteer Profile</h3>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.volunteer.title)
+        </div>
+
+        <div>
+            @(Html.Kendo().DropDownList()
+                      .Name("volunteer.title")
+                      .DataTextField("keyName")
+                      .DataValueField("keyValue")
+                      .DataSource(source =>
+                        {
+                            source.Read(read =>
+                            {
+                                read.Action("Title_List_Read", "Definition"); //Set the Action and Controller name
+                            })
+                            .ServerFiltering(true); //If true the DataSource will not filter the data on the client.
+                        })
+                      .SelectedIndex(0)
+                  )
+        </div>
+
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.volunteer.firstName)
+        </div>
+        <div class="editor-field">
+            <input id="volunteer_firstName" class="k-textbox" name="volunteer.firstName" required type="text" />
+
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.volunteer.lastName)
+        </div>
+        <div class="editor-field">
+            <input id="volunteer_lastName" class="k-textbox" name="volunteer.lastName" required type="text" />
+        </div>
+
+        <div class="editor-label">
+            Birthday (mm/dd/yyyy)
+        </div>
+        <div class="editor-field">
+            @Html.Kendo().DatePickerFor(model => model.volunteer.birthday).Max(DateTime.Today).Value(DateTime.Today.AddYears(-20))
+            @Html.ValidationMessageFor(model => model.volunteer.birthday)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.volunteer.gender)
+        </div>
+        <div>
+            @(Html.Kendo().DropDownList()
+                      .Name("volunteer.gender")
+                      .DataTextField("keyName")
+                      .DataValueField("keyValue")
+                      .DataSource(source =>
+                        {
+                            source.Read(read =>
+                            {
+                                read.Action("Gender_List_Read", "Definition"); //Set the Action and Controller name
+                            })
+                            .ServerFiltering(true); //If true the DataSource will not filter the data on the client.
+                        })
+                      .SelectedIndex(0)
+                  )
+
+            @Html.ValidationMessageFor(model => model.volunteer.gender)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.volunteer.homePhone)
+        </div>
+        <div class="editor-field">
+            <input id="volunteer_homePhone" class="k-textbox" name="volunteer.homePhone" type="tel" />
+            @Html.ValidationMessageFor(model => model.volunteer.homePhone)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.volunteer.cellPhone)
+        </div>
+        <div class="editor-field">
+            <input id="volunteer_cellPhone" class="k-textbox" name="volunteer.cellPhone" type="tel" />
+            @Html.ValidationMessageFor(model => model.volunteer.cellPhone)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.volunteer.email)
+        </div>
+        <div class="editor-field">
+            <input id="volunteer_email" class="k-textbox" name="volunteer.email" type="email" />
+            @Html.ValidationMessageFor(model => model.volunteer.email)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.volunteer.orientation)
+        </div>
+        <div>
+            @(Html.Kendo().DropDownList()
+                      .Name("volunteer.orientation")
+                      .DataTextField("keyName")
+                      .DataValueField("keyValue")
+                      .DataSource(source =>
+                        {
+                            source.Read(read =>
+                            {
+                                read.Action("Orientation_List_Read", "Definition"); //Set the Action and Controller name
+                            })
+                            .ServerFiltering(true); //If true the DataSource will not filter the data on the client.
+                        })
+                      .SelectedIndex(0)
+                  )
+
+            @Html.ValidationMessageFor(model => model.volunteer.orientation)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.volunteer.transitPass)
+        </div>
+        <div>
+            @(Html.Kendo().DropDownList()
+                      .Name("volunteer.transitPass")
+                      .DataTextField("keyName")
+                      .DataValueField("keyValue")
+                      .DataSource(source =>
+                        {
+                            source.Read(read =>
+                            {
+                                read.Action("TransitPass_List_Read", "Definition"); //Set the Action and Controller name
+                            })
+                            .ServerFiltering(true); //If true the DataSource will not filter the data on the client.
+                        })
+                      .SelectedIndex(0)
+                  )
+
+            @Html.ValidationMessageFor(model => model.volunteer.orientation)
+        </div>
+    </div>    
+    
+    <div class="float-left" style="width: 350px;">
+        <h3>Primary Address</h3>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.location.locationType)
+        </div>
+        <div class="editor-field">
+            @(Html.Kendo().DropDownList()
+                      .Name("location.locationType")
+                      .DataTextField("keyName")
+                      .DataValueField("keyValue")
+                      .DataSource(source =>
+                        {
+                            source.Read(read =>
+                            {
+                                read.Action("LocationType_List_Read", "Definition"); //Set the Action and Controller name
+                            })
+                            .ServerFiltering(true); //If true the DataSource will not filter the data on the client.
+                        })
+                      .SelectedIndex(0)
+                  )
+            @Html.ValidationMessageFor(model => model.location.locationType)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.location.address)
+        </div>
+        <div class="editor-field">
+            <input id="location_address" name="location.address" style="width: 300px;" class="k-textbox" required type="text" />
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.location.city)
+        </div>
+        <div class="editor-field">
+            @(Html.Kendo().AutoCompleteFor(m => m.location.city)
+              .DataTextField("city")
+              .DataSource(source =>
+              {
+                  source.Read(read =>
+                  {
+                      read.Action("AutoComplete_City", "Definition");
+                  });
+                  source.ServerFiltering(true);
+              })
+              .Filter("contains")
+                 .Suggest(true)
+                 .MinLength(2)
+              )
+            @Html.ValidationMessageFor(model => model.location.city)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.location.province)
+        </div>
+        <div class="editor-field">
+            @(Html.Kendo().DropDownList()
+                      .Name("location.province")
+                      .DataTextField("keyName")
+                      .DataValueField("keyValue")
+                      .DataSource(source =>
+                        {
+                            source.Read(read =>
+                            {
+                                read.Action("Province_List_Read", "Definition"); //Set the Action and Controller name
+                            })
+                            .ServerFiltering(true); //If true the DataSource will not filter the data on the client.
+                        })
+                      .SelectedIndex(0)
+                  )
+            @Html.ValidationMessageFor(model => model.location.province)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.location.country)
+        </div>
+        <div class="editor-field">
+            @(Html.Kendo().AutoCompleteFor(m => m.location.country)
+              .DataTextField("country")
+              .DataSource(source =>
+              {
+                  source.Read(read =>
+                  {
+                      read.Action("AutoComplete_Country", "Definition");
+                  });
+                  source.ServerFiltering(true);
+              })
+              .Filter("contains")
+                 .Suggest(true)
+                 .MinLength(2)
+              )
+            @Html.ValidationMessageFor(model => model.location.country)
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.location.postalcode)
+        </div>
+        <div class="editor-field">
+            <input id="location_postalcode" name="location.postalcode" class="k-textbox" type="text"  style="text-transform:uppercase;"/>
+        </div>
+    </div>
+    <div class="float-left" style="width: 300px;">
+        <h3>Primary Emergency Contact</h3>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.contact.contactName)
+        </div>
+        <div class="editor-field">
+            <input id="contact_contactName" name="contact.contactName" class="k-textbox" required type="text" />
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.contact.relationship)
+        </div>
+        <div class="editor-field">
+            <input id="contact_relationship" class="k-textbox" name="contact.relationship" required type="text" />
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.contact.emergencyPhone)
+        </div>
+        <div class="editor-field">
+            <input id="contact_emergencyPhone" name="contact.emergencyPhone" class="k-textbox" required type="tel" />
+        </div>
+        <div class="editor-label">
+            @Html.LabelFor(model => model.contact.comment)
+        </div>
+        <div class="editor-field">
+            <input id="contact_comment" class="k-textbox" name="contact.comment" type="text" />
+            @Html.ValidationMessageFor(model => model.contact.comment)
+        </div>
+        <p>
+            <input type="submit" class="k-button" value="Create" />
+        </p>
+    </div>
+     
+}
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script type="text/javascript">
+    jQuery(function ($) {
+        $
+        $("#volunteer_homePhone").mask("(999) 999-9999");
+        $("#volunteer_cellPhone").mask("(999) 999-9999");
+        $("#volunteer_birthday").mask("99/99/9999");
+        $("#location_postalcode").mask("a9a 9a9");
+        $("#contact_emergencyPhone").mask("(999) 999-9999");
+    });
+</script>

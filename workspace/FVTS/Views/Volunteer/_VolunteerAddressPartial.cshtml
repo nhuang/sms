@@ -1,0 +1,51 @@
+﻿@model IEnumerable<FVTS.Models.VolunteerLocationModel>
+
+<h4>Address</h4>
+@(Html.Kendo().Grid(Model)    
+    .Name("Location")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.locationId).Visible(false);
+        columns.Bound(p => p.volunteerId).Visible(false);
+        columns.Bound(p => p.locationType); 
+        columns.Bound(p => p.address).Width(240);       
+        columns.Bound(p => p.city).Width(100);
+        columns.Bound(p => p.province).Width(100);
+        columns.Bound(p => p.postalcode).Width(100);
+        columns.Command(command => {command.Edit(); command.Destroy(); });
+    })
+    .Editable(editable => editable.Mode(GridEditMode.InLine))
+    //.HtmlAttributes(new { style = "height: 675px" })
+    .Pageable()
+    .Sortable()
+    .Filterable()
+    .Scrollable()
+    .Reorderable(reorder => reorder.Columns(true))
+    .Selectable(selectable => selectable.Mode(GridSelectionMode.Single))
+    .Resizable(resize => resize.Columns(true))
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .ServerOperation(true)
+        .Events(events => events.Error("error_handler"))
+        .Model(model => model.Id(u => u.volunteerId))
+        .Create("Location_Create", "Volunteer")
+        .Read("Location_Read", "Volunteer")
+        .Update("Location_Update", "Volunteer")
+        .Destroy("Location_Destroy", "Volunteer")
+    ).ColumnMenu())
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+</script>

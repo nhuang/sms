@@ -1,0 +1,13 @@
+﻿@{
+    ViewBag.Title = "SearchByCode";
+    string info = ViewBag.Info;
+}
+
+<h2>Search By Colunteer Id</h2>
+<h5 style="color:red">@info</h5>
+
+@using (Html.BeginForm("SearchByCode", "Volunteer"))
+{
+   <input type="text" name="code" class="k-textbox" placeholder="Volunteer Id" />
+   <input type="submit" class="k-button" value="Sign In/Out" />
+}

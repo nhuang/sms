@@ -1,0 +1,290 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="FVTSModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="FVTSModelStoreContainer">
+    <EntitySet Name="Definition" EntityType="FVTSModel.Store.Definition" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="EmergencyContact" EntityType="FVTSModel.Store.EmergencyContact" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Location" EntityType="FVTSModel.Store.Location" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ShiftRecord" EntityType="FVTSModel.Store.ShiftRecord" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="sysdiagrams" EntityType="FVTSModel.Store.sysdiagrams" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="UserProfile" EntityType="FVTSModel.Store.UserProfile" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Volunteer" EntityType="FVTSModel.Store.Volunteer" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="webpages_Membership" EntityType="FVTSModel.Store.webpages_Membership" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="webpages_OAuthMembership" EntityType="FVTSModel.Store.webpages_OAuthMembership" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="webpages_Roles" EntityType="FVTSModel.Store.webpages_Roles" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="webpages_UsersInRoles" EntityType="FVTSModel.Store.webpages_UsersInRoles" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="FK_EMERGENC_REFERENCE_VOLUNTEE" Association="FVTSModel.Store.FK_EMERGENC_REFERENCE_VOLUNTEE">
+      <End Role="Volunteer" EntitySet="Volunteer" />
+      <End Role="EmergencyContact" EntitySet="EmergencyContact" />
+    </AssociationSet>
+    <AssociationSet Name="FK_LOCATION_REFERENCE_EMERGENC" Association="FVTSModel.Store.FK_LOCATION_REFERENCE_EMERGENC">
+      <End Role="EmergencyContact" EntitySet="EmergencyContact" />
+      <End Role="Location" EntitySet="Location" />
+    </AssociationSet>
+    <AssociationSet Name="FK_LOCATION_REFERENCE_VOLUNTEE" Association="FVTSModel.Store.FK_LOCATION_REFERENCE_VOLUNTEE">
+      <End Role="Volunteer" EntitySet="Volunteer" />
+      <End Role="Location" EntitySet="Location" />
+    </AssociationSet>
+    <AssociationSet Name="fk_RoleId" Association="FVTSModel.Store.fk_RoleId">
+      <End Role="webpages_Roles" EntitySet="webpages_Roles" />
+      <End Role="webpages_UsersInRoles" EntitySet="webpages_UsersInRoles" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SHIFTREC_RECORDS_VOLUNTEE" Association="FVTSModel.Store.FK_SHIFTREC_RECORDS_VOLUNTEE">
+      <End Role="Volunteer" EntitySet="Volunteer" />
+      <End Role="ShiftRecord" EntitySet="ShiftRecord" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SHIFTREC_TEAM_DEFINITI" Association="FVTSModel.Store.FK_SHIFTREC_TEAM_DEFINITI">
+      <End Role="Definition" EntitySet="Definition" />
+      <End Role="ShiftRecord" EntitySet="ShiftRecord" />
+    </AssociationSet>
+    <AssociationSet Name="FK_WEBPAGES_MEMBERSHI_USERPROF" Association="FVTSModel.Store.FK_WEBPAGES_MEMBERSHI_USERPROF">
+      <End Role="UserProfile" EntitySet="UserProfile" />
+      <End Role="webpages_Membership" EntitySet="webpages_Membership" />
+    </AssociationSet>
+    <AssociationSet Name="FK_WEBPAGES_ROLES_USERPROF" Association="FVTSModel.Store.FK_WEBPAGES_ROLES_USERPROF">
+      <End Role="UserProfile" EntitySet="UserProfile" />
+      <End Role="webpages_UsersInRoles" EntitySet="webpages_UsersInRoles" />
+    </AssociationSet>
+    <AssociationSet Name="FK_WEBPAGES_USERID_USERPROF" Association="FVTSModel.Store.FK_WEBPAGES_USERID_USERPROF">
+      <End Role="UserProfile" EntitySet="UserProfile" />
+      <End Role="webpages_OAuthMembership" EntitySet="webpages_OAuthMembership" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Definition">
+    <Key>
+      <PropertyRef Name="definitionId" />
+    </Key>
+    <Property Name="definitionId" Type="int" Nullable="false" />
+    <Property Name="displayName" Type="nvarchar" Nullable="false" MaxLength="1024" />
+    <Property Name="keyName" Type="nvarchar" Nullable="false" MaxLength="100" />
+    <Property Name="keyValue" Type="nvarchar" Nullable="false" MaxLength="1024" />
+  </EntityType>
+  <EntityType Name="EmergencyContact">
+    <Key>
+      <PropertyRef Name="contactId" />
+    </Key>
+    <Property Name="contactId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="volunteerId" Type="int" />
+    <Property Name="firstName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="lastName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="relationship" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="primaryPhone" Type="nvarchar" Nullable="false" MaxLength="20" />
+    <Property Name="otherPhone" Type="nvarchar" MaxLength="20" />
+  </EntityType>
+  <EntityType Name="Location">
+    <Key>
+      <PropertyRef Name="locationId" />
+    </Key>
+    <Property Name="locationId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="volunteerId" Type="int" />
+    <Property Name="contactId" Type="int" />
+    <Property Name="description" Type="nvarchar" MaxLength="50" />
+    <Property Name="address" Type="nvarchar" MaxLength="100" />
+    <Property Name="city" Type="nvarchar" MaxLength="100" />
+    <Property Name="province" Type="nvarchar" MaxLength="100" />
+    <Property Name="country" Type="nvarchar" MaxLength="100" />
+    <Property Name="postalcode" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="ShiftRecord">
+    <Key>
+      <PropertyRef Name="recordId" />
+    </Key>
+    <Property Name="volunteerId" Type="int" />
+    <Property Name="recordId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="teamId" Type="int" />
+    <Property Name="startOn" Type="datetime" Nullable="false" />
+    <Property Name="endOn" Type="datetime" />
+    <Property Name="createOn" Type="datetime" Nullable="false" />
+    <Property Name="createBy" Type="datetime" Nullable="false" />
+    <Property Name="modifiedOn" Type="datetime" Nullable="false" />
+    <Property Name="modifiedBy" Type="datetime" Nullable="false" />
+    <Property Name="earnedBucks" Type="numeric" Nullable="false" Precision="10" Scale="2" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" Nullable="false" MaxLength="128" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="UserProfile">
+    <Key>
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="UserId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="UserName" Type="nvarchar" MaxLength="20" />
+    <Property Name="Email" Type="nvarchar" MaxLength="256" />
+    <Property Name="Phone" Type="nvarchar" MaxLength="20" />
+    <Property Name="FullName" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="Volunteer">
+    <Key>
+      <PropertyRef Name="volunteerId" />
+    </Key>
+    <Property Name="volunteerId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="firstName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="lastName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="nickName" Type="nvarchar" MaxLength="50" />
+    <Property Name="birthday" Type="date" />
+    <Property Name="gender" Type="varchar" Nullable="false" MaxLength="2" />
+    <Property Name="status" Type="varchar" Nullable="false" MaxLength="2" />
+    <Property Name="primaryPhone" Type="nvarchar" Nullable="false" MaxLength="20" />
+    <Property Name="otherPhone" Type="nvarchar" MaxLength="20" />
+    <Property Name="createOn" Type="datetime" Nullable="false" />
+    <Property Name="createBy" Type="nvarchar" Nullable="false" MaxLength="256" />
+    <Property Name="modifiedOn" Type="datetime" Nullable="false" />
+    <Property Name="modifiedBy" Type="nvarchar" MaxLength="256" />
+    <Property Name="activatedOn" Type="datetime" />
+    <Property Name="deactivatedOn" Type="datetime" />
+  </EntityType>
+  <EntityType Name="webpages_Membership">
+    <Key>
+      <PropertyRef Name="UserId" />
+    </Key>
+    <Property Name="UserId" Type="int" Nullable="false" />
+    <Property Name="CreateDate" Type="datetime" />
+    <Property Name="ConfirmationToken" Type="nvarchar" MaxLength="128" />
+    <Property Name="IsConfirmed" Type="bit" />
+    <Property Name="LastPasswordFailureDate" Type="datetime" />
+    <Property Name="PasswordFailuresSinceLastSuccess" Type="int" Nullable="false" />
+    <Property Name="Password" Type="nvarchar" Nullable="false" MaxLength="128" />
+    <Property Name="PasswordChangedDate" Type="datetime" />
+    <Property Name="PasswordSalt" Type="nvarchar" Nullable="false" MaxLength="128" />
+    <Property Name="PasswordVerificationToken" Type="nvarchar" MaxLength="128" />
+    <Property Name="PasswordVerificationTokenExpirationDate" Type="datetime" />
+  </EntityType>
+  <EntityType Name="webpages_OAuthMembership">
+    <Key>
+      <PropertyRef Name="Provider" />
+      <PropertyRef Name="ProviderUserId" />
+    </Key>
+    <Property Name="Provider" Type="nvarchar" Nullable="false" MaxLength="30" />
+    <Property Name="ProviderUserId" Type="nvarchar" Nullable="false" MaxLength="100" />
+    <Property Name="UserId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="webpages_Roles">
+    <Key>
+      <PropertyRef Name="RoleId" />
+    </Key>
+    <Property Name="RoleId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="RoleName" Type="nvarchar" Nullable="false" MaxLength="256" />
+  </EntityType>
+  <EntityType Name="webpages_UsersInRoles">
+    <Key>
+      <PropertyRef Name="UserId" />
+      <PropertyRef Name="RoleId" />
+    </Key>
+    <Property Name="UserId" Type="int" Nullable="false" />
+    <Property Name="RoleId" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_EMERGENC_REFERENCE_VOLUNTEE">
+    <End Role="Volunteer" Type="FVTSModel.Store.Volunteer" Multiplicity="0..1" />
+    <End Role="EmergencyContact" Type="FVTSModel.Store.EmergencyContact" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Volunteer">
+        <PropertyRef Name="volunteerId" />
+      </Principal>
+      <Dependent Role="EmergencyContact">
+        <PropertyRef Name="volunteerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_LOCATION_REFERENCE_EMERGENC">
+    <End Role="EmergencyContact" Type="FVTSModel.Store.EmergencyContact" Multiplicity="0..1" />
+    <End Role="Location" Type="FVTSModel.Store.Location" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="EmergencyContact">
+        <PropertyRef Name="contactId" />
+      </Principal>
+      <Dependent Role="Location">
+        <PropertyRef Name="contactId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_LOCATION_REFERENCE_VOLUNTEE">
+    <End Role="Volunteer" Type="FVTSModel.Store.Volunteer" Multiplicity="0..1" />
+    <End Role="Location" Type="FVTSModel.Store.Location" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Volunteer">
+        <PropertyRef Name="volunteerId" />
+      </Principal>
+      <Dependent Role="Location">
+        <PropertyRef Name="volunteerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="fk_RoleId">
+    <End Role="webpages_Roles" Type="FVTSModel.Store.webpages_Roles" Multiplicity="1" />
+    <End Role="webpages_UsersInRoles" Type="FVTSModel.Store.webpages_UsersInRoles" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="webpages_Roles">
+        <PropertyRef Name="RoleId" />
+      </Principal>
+      <Dependent Role="webpages_UsersInRoles">
+        <PropertyRef Name="RoleId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SHIFTREC_RECORDS_VOLUNTEE">
+    <End Role="Volunteer" Type="FVTSModel.Store.Volunteer" Multiplicity="0..1" />
+    <End Role="ShiftRecord" Type="FVTSModel.Store.ShiftRecord" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Volunteer">
+        <PropertyRef Name="volunteerId" />
+      </Principal>
+      <Dependent Role="ShiftRecord">
+        <PropertyRef Name="volunteerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SHIFTREC_TEAM_DEFINITI">
+    <End Role="Definition" Type="FVTSModel.Store.Definition" Multiplicity="0..1" />
+    <End Role="ShiftRecord" Type="FVTSModel.Store.ShiftRecord" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Definition">
+        <PropertyRef Name="definitionId" />
+      </Principal>
+      <Dependent Role="ShiftRecord">
+        <PropertyRef Name="teamId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_WEBPAGES_MEMBERSHI_USERPROF">
+    <End Role="UserProfile" Type="FVTSModel.Store.UserProfile" Multiplicity="1" />
+    <End Role="webpages_Membership" Type="FVTSModel.Store.webpages_Membership" Multiplicity="0..1" />
+    <ReferentialConstraint>
+      <Principal Role="UserProfile">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="webpages_Membership">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_WEBPAGES_ROLES_USERPROF">
+    <End Role="UserProfile" Type="FVTSModel.Store.UserProfile" Multiplicity="1" />
+    <End Role="webpages_UsersInRoles" Type="FVTSModel.Store.webpages_UsersInRoles" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserProfile">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="webpages_UsersInRoles">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_WEBPAGES_USERID_USERPROF">
+    <End Role="UserProfile" Type="FVTSModel.Store.UserProfile" Multiplicity="1" />
+    <End Role="webpages_OAuthMembership" Type="FVTSModel.Store.webpages_OAuthMembership" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserProfile">
+        <PropertyRef Name="UserId" />
+      </Principal>
+      <Dependent Role="webpages_OAuthMembership">
+        <PropertyRef Name="UserId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

@@ -1,0 +1,62 @@
+﻿@using System.Net.Sockets;
+@{ 
+    ViewBag.Title = "About";
+    IPHostEntry host;
+    string localIP = "";
+    host = Dns.GetHostEntry(Dns.GetHostName());
+    foreach (IPAddress ip in host.AddressList)
+    {
+        if (ip.AddressFamily == AddressFamily.InterNetwork)
+        {
+            localIP = ip.ToString();
+        }
+    }
+}
+
+<div>
+    <h2>Prerequisites</h2>
+    <p>Ensure that you have the following installed and configured on your machine before using Shift Management System (SMS):</p>
+    <ul>
+        <li>A web browser application on your computer. Example: Firefox (suggest), Chrome, Internet Explorer... </li>
+        <li>JavaScript support and cookie support enabled within the web browser used to access SMS.</li>
+        <li>Network access to a server that is running the SMS software.</li>
+        <li>SMS may use dynamic ip address,
+            <br />
+            Your system or network administrator can provide you with a web address (URL: <strong style="color:red">http://@localIP </strong>) from which the system can be accessed.
+        </li>
+    </ul>
+
+    <h2>Web browser window controls</h2>
+    SMS dynamically generates the HTML pages that the web browser displays when you click certain buttons on a web page.<br />
+    SMS may not display these pages if you use the browser’s Back and Forward buttons. It is recommended that you use the button function navigate in the application.<p />
+
+    Note: SMS is designed for a minimum 1024x768-pixel screen display resolutio
+
+    <h2>Accessing SMS</h2>
+    Use a supported web browser to access the SMS application. You will need a user account and login credentials to log into the application.<br />
+    The System Administrator must provide you with your user name and password. You can change your password after you log into SMS.
+
+    <h2>Troubleshooting tips</h2>
+    Perform the tasks listed below if you cannot log into SMS:
+    <ul>
+        <li>Verify that the username and password are correct, including any upper-case letters</li>
+        <li>Verify with your system administrator that you have the correct username and password</li>
+        <li>Contact your system administrator to ensure that your account has not been disabled</li>
+    </ul>
+
+    <h2>Security timeout</h2>
+    SMS has set the following rules for user sessions:
+     <ul>
+         <li>You can log into a SMS instance simultaneously using the same account from two different machines or browsers.</li>
+         <li>Open an unlimited number of pages of a SMS instance within a single browser</li>
+     </ul>
+
+    <h2>User session rules</h2>
+    For security reasons, the system automatically logs you out if you do not perform any tasks for a specified period of time. This timeout period is determined by two factors:
+    <ul>
+        <li>The lifetime of the System Session Cookie. The default lifetime is until the browser is closed.</li>
+        <li>The Server session timeout period. The default value is 4 hours.</li>
+        <li>If you do not perform any tasks for a certain time period, the system logs you out either because the browser session or the ASP.NET_Session session timed out.</li>
+        <li>Click any button on the page when you are ready to resume working. This automatically directs you to the Log In page. You can also close the web browser and navigate to the Log In page in a new browser window</li>
+    </ul>
+</div>

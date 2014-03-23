@@ -1,0 +1,76 @@
+﻿@model IEnumerable<FVTS.Models.DefinitionModel>
+
+
+@(Html.Kendo().Grid(Model)    
+    .Name("Definition")
+    .Columns(columns =>
+    {
+        columns.Bound(d => d.definitionId).Visible(false);
+        columns.Bound(d => d.displayName);
+        columns.Bound(d => d.keyName);
+        columns.Bound(d => d.keyValue);
+        columns.Bound(d => d.keyGroup);
+        columns.Bound(d => d.sequence);
+        columns.Command(command => { command.Edit();}).Width(200); ;   
+    })
+    .Editable(editable => editable.Mode(GridEditMode.InLine))
+    .Pageable(pager => pager
+        .Refresh(true)
+     )
+     .HtmlAttributes(new { style = "height: 400px" })
+    .Sortable()
+    .Scrollable()
+    .Groupable()
+    .Reorderable(reorder => reorder.Columns(true))
+    .Selectable(selectable => selectable.Mode(GridSelectionMode.Single))
+    .Resizable(resize => resize.Columns(true))
+    .ColumnMenu()
+    .Filterable()
+    .ColumnMenu()
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .ServerOperation(true)
+        .Sort(sort =>
+        {
+            // Sort by UnitsInStock in descending order
+            sort.Add(d => d.keyGroup).Ascending();
+            sort.Add(d => d.sequence).Ascending();
+        })
+        .Events(events => events.Error("error_handler"))
+        .Model(model =>
+            {
+                //The unique identifier (primary key) of the model is the ProductID property
+                model.Id(p => p.definitionId);
+            })
+        .Read("Definition_Read", "System")
+        .Update("Definition_Update", "System").Events(events => events.Sync("end_handler"))
+    )
+
+)
+
+<script type="text/javascript">
+    var chaged = false;
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+
+    function end_handler(e) {
+        alert("Updated!");      
+        refresh_handler();
+    }
+
+    function refresh_handler() {
+        $("#Definition").data("kendoGrid").dataSource.read();
+    }
+</script>
+

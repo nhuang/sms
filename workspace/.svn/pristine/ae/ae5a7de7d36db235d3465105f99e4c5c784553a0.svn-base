@@ -1,0 +1,91 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="FVTSModel1StoreContainer" CdmEntityContainer="FVTSEntities">
+    <EntitySetMapping Name="Definitions">
+      <EntityTypeMapping TypeName="FVTSModel1.Definition">
+        <MappingFragment StoreEntitySet="Definition">
+          <ScalarProperty Name="definitionId" ColumnName="definitionId" />
+          <ScalarProperty Name="displayName" ColumnName="displayName" />
+          <ScalarProperty Name="keyName" ColumnName="keyName" />
+          <ScalarProperty Name="keyValue" ColumnName="keyValue" />
+          <ScalarProperty Name="keyGroup" ColumnName="keyGroup" />
+          <ScalarProperty Name="sequence" ColumnName="sequence" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="EmergencyContacts">
+      <EntityTypeMapping TypeName="FVTSModel1.EmergencyContact">
+        <MappingFragment StoreEntitySet="EmergencyContact">
+          <ScalarProperty Name="comment" ColumnName="comment" />
+          <ScalarProperty Name="contactName" ColumnName="contactName" />
+          <ScalarProperty Name="contactId" ColumnName="contactId" />
+          <ScalarProperty Name="volunteerId" ColumnName="volunteerId" />
+          <ScalarProperty Name="relationship" ColumnName="relationship" />
+          <ScalarProperty Name="emergencyPhone" ColumnName="emergencyPhone" />
+          <ScalarProperty Name="createDate" ColumnName="createDate" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Locations">
+      <EntityTypeMapping TypeName="FVTSModel1.Location">
+        <MappingFragment StoreEntitySet="Location">
+          <ScalarProperty Name="country" ColumnName="country" />
+          <ScalarProperty Name="locationId" ColumnName="locationId" />
+          <ScalarProperty Name="volunteerId" ColumnName="volunteerId" />
+          <ScalarProperty Name="contactId" ColumnName="contactId" />
+          <ScalarProperty Name="locationType" ColumnName="locationType" />
+          <ScalarProperty Name="address" ColumnName="address" />
+          <ScalarProperty Name="city" ColumnName="city" />
+          <ScalarProperty Name="province" ColumnName="province" />
+          <ScalarProperty Name="postalcode" ColumnName="postalcode" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ShiftRecords">
+      <EntityTypeMapping TypeName="FVTSModel1.ShiftRecord">
+        <MappingFragment StoreEntitySet="ShiftRecord">
+          <ScalarProperty Name="volunteerId" ColumnName="volunteerId" />
+          <ScalarProperty Name="recordId" ColumnName="recordId" />
+          <ScalarProperty Name="teamName" ColumnName="teamName" />
+          <ScalarProperty Name="startOn" ColumnName="startOn" />
+          <ScalarProperty Name="endOn" ColumnName="endOn" />
+          <ScalarProperty Name="createOn" ColumnName="createOn" />
+          <ScalarProperty Name="createBy" ColumnName="createBy" />
+          <ScalarProperty Name="modifiedOn" ColumnName="modifiedOn" />
+          <ScalarProperty Name="modifiedBy" ColumnName="modifiedBy" />
+          <ScalarProperty Name="earnedBucks" ColumnName="earnedBucks" />
+          <ScalarProperty Name="earnHours" ColumnName="earnHours" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Volunteers">
+      <EntityTypeMapping TypeName="FVTSModel1.Volunteer">
+        <MappingFragment StoreEntitySet="Volunteer">
+          <ScalarProperty Name="importID" ColumnName="importID" />
+          <ScalarProperty Name="transitPass" ColumnName="transitPass" />
+          <ScalarProperty Name="orientation" ColumnName="orientation" />
+          <ScalarProperty Name="email" ColumnName="email" />
+          <ScalarProperty Name="volunteerId" ColumnName="volunteerId" />
+          <ScalarProperty Name="constituentCode" ColumnName="constituentCode" />
+          <ScalarProperty Name="title" ColumnName="title" />
+          <ScalarProperty Name="firstName" ColumnName="firstName" />
+          <ScalarProperty Name="lastName" ColumnName="lastName" />
+          <ScalarProperty Name="nickName" ColumnName="nickName" />
+          <ScalarProperty Name="birthday" ColumnName="birthday" />
+          <ScalarProperty Name="status" ColumnName="status" />
+          <ScalarProperty Name="gender" ColumnName="gender" />
+          <ScalarProperty Name="homePhone" ColumnName="homePhone" />
+          <ScalarProperty Name="cellPhone" ColumnName="cellPhone" />
+          <ScalarProperty Name="createOn" ColumnName="createOn" />
+          <ScalarProperty Name="createBy" ColumnName="createBy" />
+          <ScalarProperty Name="modifiedOn" ColumnName="modifiedOn" />
+          <ScalarProperty Name="modifiedBy" ColumnName="modifiedBy" />
+          <ScalarProperty Name="activatedOn" ColumnName="activatedOn" />
+          <ScalarProperty Name="deactivatedOn" ColumnName="deactivatedOn" />
+          <ScalarProperty Name="note" ColumnName="note" />
+          <ScalarProperty Name="token" ColumnName="token" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

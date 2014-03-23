@@ -1,0 +1,39 @@
+﻿@using FVTS.Models
+@model FVTS.Models.LocalPasswordModel
+
+<p class="message-success">@ViewBag.StatusMessage</p>
+
+<p>You're logged in as <strong>@User.Identity.Name</strong>.</p>
+
+@(Html.Kendo().TabStrip()
+          .Name("tabstrip")
+          .Items(tabstrip =>
+          {
+              tabstrip.Add().Text("Reset Password")
+                  .Selected(true)
+                  .Content(@<text>
+                    <div>
+                        @if (ViewBag.HasLocalPassword)
+                        {
+                            @Html.Partial("_ChangePasswordPartial")
+                        }
+                        else
+                        { 
+                            @Html.Partial("_SetPasswordPartial")
+                        }
+                    </div>
+                   </text>);
+
+              tabstrip.Add().Text("User Profile")
+                  .Content(@<text>
+                    <div>
+                        @Html.Partial("_ReadUserProfilePartial", (UserProfile)ViewBag.UserProfile)
+                    </div>
+                    </text>);
+          })
+    )
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

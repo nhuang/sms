@@ -1,0 +1,114 @@
+﻿@model FVTS.Models.Volunteer
+
+@{
+    ViewBag.Title = "Details";
+    var roles = (SimpleRoleProvider)Roles.Provider;
+}
+
+<h2>
+    @{
+        string constituentCode = Model.constituentCode == "" ? "Walk In" : Model.constituentCode;
+    }
+    @constituentCode : @Html.DisplayFor(model => model.firstName) ,  @Html.DisplayFor(model => model.lastName)
+
+</h2>
+@{
+    if (Model.orientation == "N/A") { 
+        <h4 style="color:red">Orientation information not available, please ask the volunteer and update system</h4>
+    }
+}
+
+
+<fieldset>
+    <legend>Volunteer</legend>
+
+    <div class="display-label">
+        <strong style="color: gray; font-size: medium">Gender :</strong>  <strong style="font-size: medium">@Html.DisplayFor(model => model.gender)</strong>
+    </div>
+    <div class="display-label">
+        <strong style="color: gray; font-size: medium">Home Phone :</strong>  <strong style="font-size: medium">@Html.DisplayFor(model => model.homePhone)</strong>
+    </div>
+    <div class="display-label">
+        <strong style="color: gray; font-size: medium">Cell Phone :</strong>  <strong style="font-size: medium">@Html.DisplayFor(model => model.cellPhone)</strong>
+    </div>
+    @using (Html.BeginForm("EditOrientation", "Volunteer"))
+    { 
+        <input type="hidden" name='volunteer.volunteerId' value = @Model.volunteerId />
+        <div class="display-label">
+            <strong style="color: gray; font-size: medium">Orientation :</strong>
+            @(Html.Kendo().DropDownList()
+                      .Name("volunteer.orientation")
+                      .DataTextField("keyName")
+                      .DataValueField("keyValue")
+                      .DataSource(source =>
+                        {
+                            source.Read(read =>
+                            {
+                                read.Action("Orientation_List_Read", "Definition"); //Set the Action and Controller name
+                            })
+                            .ServerFiltering(true); //If true the DataSource will not filter the data on the client.
+                        })
+                      .SelectedIndex(0)
+                      .Value(@Model.orientation)
+          ) 
+            <input type="submit" class="k-button" value="Update" />
+        </div>
+    }
+
+    <div class="display-label">
+        <strong style="color: gray; font-size: medium">Transit Pass Required :</strong>  <strong style="font-size: medium">@Html.DisplayFor(model => model.transitPass)</strong>
+    </div>
+    <p></p>
+    @{
+        if (Model.Locations != null && Model.Locations.Count > 0)
+        { 
+        <div class="display-label">
+            <h3>Address</h3>
+        </div>
+        <div class="display-label">
+            <strong style="font-size: medium">@Html.DisplayFor(model => model.Locations.FirstOrDefault().address)</strong>
+            <br />
+            <strong style="font-size: medium">@Html.DisplayFor(model => model.Locations.FirstOrDefault().city)</strong> ,
+             <strong style="font-size: medium">@Html.DisplayFor(model => model.Locations.FirstOrDefault().province)</strong> ,
+             <strong style="font-size: medium">@Html.DisplayFor(model => model.Locations.FirstOrDefault().country)</strong>
+            <strong style="font-size: medium">@Html.DisplayFor(model => model.Locations.FirstOrDefault().postalcode)</strong>
+
+        </div>
+        }
+    }
+    <p></p>
+    @{
+        if (Model.EmergencyContacts != null && Model.EmergencyContacts.Count > 0)
+        {
+        <div class="display-label">
+            <h3>Emergency Contact</h3>
+        </div>
+            foreach (var item in Model.EmergencyContacts)
+            { 
+        <div class="display-label">
+            <strong style="color: gray; font-size: medium">Name :</strong>  <strong style="font-size: medium">@item.contactName</strong>
+        </div>
+        <div class="display-label">
+            <strong style="color: gray; font-size: medium">Relationship :</strong>  <strong style="font-size: medium">@item.relationship</strong>
+        </div>
+        <div class="display-label">
+            <strong style="color: gray; font-size: medium">Phone :</strong>  <strong style="font-size: medium">@item.emergencyPhone</strong>
+        </div>
+        <div class="display-label">
+            <strong style="color: gray; font-size: medium">Comment :</strong>  <strong style="font-size: medium">@item.comment</strong>
+        </div>
+        <p></p>
+            }
+
+
+        }
+    }
+</fieldset>
+@{
+    if (WebSecurity.IsAuthenticated && (roles.GetRolesForUser(WebSecurity.CurrentUserName).Contains("Administrator") || roles.GetRolesForUser(WebSecurity.CurrentUserName).Contains("Coordinator")))
+    {
+    <a href='../Edit/@Model.volunteerId' class="k-button" style="width:200px; font-size:xx-large"><strong>Edit</strong></a>
+    }
+    <a href='../VolunteerHistory/@Model.volunteerId' class="k-button" style="width:300px; font-size:xx-large;"><strong>Sign In Volunteer</strong> </a>
+   
+}

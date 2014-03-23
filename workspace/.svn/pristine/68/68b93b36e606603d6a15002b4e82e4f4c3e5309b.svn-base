@@ -1,0 +1,26 @@
+﻿@model FVTS.Models.ShiftRecordModels
+
+@using (Html.BeginForm("VolunteerHistory", "Volunteer"))
+{
+    @Html.ValidationSummary(true)
+
+    <input type ="hidden" name="volunteerId" value="@Model.volunteerId" />
+    <input type ="hidden" name="teamName" value="@Model.teamName" />
+    <input type ="hidden" name="recordId" value="@Model.recordId" />
+    <input type ="hidden" name="startOn" value="@Model.startOn" />
+    <table>
+        <tr>
+            <td>
+                @Html.LabelFor(m => m.teamName)
+            </td>
+            <td>
+                @Model.teamName
+            </td>
+            <td>@Html.Kendo().DateTimePickerFor(model => model.endOn).Value(DateTime.Now)</td>
+            <td>
+                <input type="submit" class="k-button" value="Sign Out" /></td>
+        </tr>
+    </table>     
+
+}
+

@@ -1,0 +1,756 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using FVTS.Models;
+using WebMatrix.WebData;
+using System.Web.Security;
+using Kendo.Mvc.Extensions;
+using Kendo.Mvc.UI;
+using LINQtoCSV;
+using System.Web.Script.Serialization;
+using System.IO;
+using System.Globalization;
+
+namespace FVTS.Controllers
+{
+    [Authorize(Roles = "Administrator")]
+    public class CSVFileController : Controller
+    {
+        private FVTSEntities db = new FVTSEntities();
+        TextInfo tiFormatter = new CultureInfo("en-US", false).TextInfo;
+
+        // GET: /CSVFile/
+
+
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        public ActionResult Async()
+        {
+            return View();
+        }
+
+        public ActionResult Save(IEnumerable<HttpPostedFileBase> files)
+        {
+            // The Name of the Upload component is "files"
+            if (files != null)
+            {
+                foreach (var file in files)
+                {
+                    var fileName = Path.GetFileName(file.FileName);
+                    var physicalPath = Path.Combine(Server.MapPath("~/CsvUpload"), fileName);
+
+                    file.SaveAs(physicalPath);
+                    // verify the csv files
+                    string result = InsertOrUpdateDatabase(physicalPath);
+                    if (result.Trim().Length > 0)
+                    {
+                        return Content(result);
+                    }
+                }
+            }
+
+            // Return an empty string to signify success
+            return Content("");
+        }
+
+        public ActionResult Remove(string[] fileNames)
+        {
+            // The parameter of the Remove action must be called "fileNames"
+
+            if (fileNames != null)
+            {
+                foreach (var fullName in fileNames)
+                {
+                    var fileName = Path.GetFileName(fullName);
+                    var physicalPath = Path.Combine(Server.MapPath("~/CsvUpload"), fileName);
+                    if (System.IO.File.Exists(physicalPath))
+                    {
+                        System.IO.File.Delete(physicalPath);
+                    }
+                }
+            }
+
+            // Return an empty string to signify success
+            return Content("");
+        }
+
+        #region import data into database
+        private string InsertOrUpdateDatabase(string physicalPath)
+        {
+            // Return an empty string to signify success
+            string result = "";
+            IEnumerable<SmsCsvModel> smsModel;
+            try
+            {
+                Volunteer volunteer = new Volunteer();
+                CsvContext csv = new CsvContext();
+
+                smsModel = csv.Read<SmsCsvModel>(physicalPath, inputFileDescription);
+                SmsCsvModel target;
+
+                foreach (SmsCsvModel item in smsModel)
+                {
+                    target = checkSMSCsvModel(item);
+
+                    if (target != null)
+                    {
+                        try
+                        {
+                            InsertOrUpateVolunteer(target);
+                            InsertOrUpateLocation(target);
+                            InsertOrUpateEmergencyContact(target);
+                        }
+                        catch (Exception ex)
+                        {
+                            result = ex.Message;
+                        }
+
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            // Return an empty string to signify success
+            return result;
+        }
+
+        private void InsertOrUpateVolunteer(SmsCsvModel item)
+        {
+            var v = db.Volunteers.Where(model => model.constituentCode == item.constituentCode);
+            if (v.FirstOrDefault() == null)
+            {
+                // insert into database
+                Volunteer volunteer = new Volunteer();
+                volunteer.importID = convertNullToString(item.importID);
+                volunteer.constituentCode = convertNullToString(item.constituentCode);
+                volunteer.title = convertNullToString(item.title);
+                volunteer.firstName = convertNullToString(item.firstName);
+                volunteer.lastName = convertNullToString(item.lastName);
+                volunteer.nickName = "";
+                volunteer.birthday = null;
+                volunteer.status = "Activate";
+                volunteer.gender = convertNullToString(item.gender, "Unknown");
+                volunteer.homePhone = convertNullToString(item.homePhone);
+                volunteer.cellPhone = convertNullToString(item.cellPhone);
+                volunteer.orientation = convertNullToString(item.orientation, "No");
+                volunteer.transitPass = convertNullToString(item.transitPass, "N/A");
+
+                volunteer.createOn = DateTime.Now;
+                volunteer.createBy = WebSecurity.CurrentUserName;
+                volunteer.modifiedOn = DateTime.Now;
+                volunteer.modifiedBy = WebSecurity.CurrentUserName;
+                volunteer.activatedOn = DateTime.Now;
+                // volunteer.deactivatedOn ;
+                // volunteer.note;
+                // volunteer.token;
+                volunteer.email = convertNullToString(item.email);
+                db.Volunteers.Add(volunteer);
+                db.SaveChanges();
+            }
+            else
+            {
+                // update database
+                Volunteer volunteer = v.FirstOrDefault();
+                volunteer.importID = convertNullToString(item.importID);
+                volunteer.title = convertNullToString(item.title);
+                volunteer.firstName = convertNullToString(item.firstName);
+                volunteer.lastName = convertNullToString(item.lastName);
+                volunteer.nickName = "";
+                //volunteer.birthday ;
+                volunteer.status = "Activate";
+                volunteer.gender = convertNullToString(item.gender, "Unknown");
+                volunteer.homePhone = convertNullToString(item.homePhone);
+                volunteer.cellPhone = convertNullToString(item.cellPhone);
+                volunteer.modifiedOn = DateTime.Now;
+                volunteer.modifiedBy = WebSecurity.CurrentUserName;
+                volunteer.activatedOn = DateTime.Now;
+                volunteer.orientation = convertNullToString(item.orientation, "No");
+                volunteer.transitPass = convertNullToString(item.transitPass, "N/A");
+                // volunteer.deactivatedOn ;
+                // volunteer.note;
+                // volunteer.token;
+                volunteer.email = convertNullToString(item.email);
+                db.Entry(volunteer).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+        }
+        private void InsertOrUpateLocation(SmsCsvModel item)
+        {
+            var v = db.Volunteers.Where(model => model.constituentCode == item.constituentCode);
+            if (v.FirstOrDefault() != null)
+            {
+                Volunteer volunteer = v.FirstOrDefault();
+                var location = db.Locations.Where(l => l.volunteerId == volunteer.volunteerId && l.locationType == "Canada");
+                if (location.FirstOrDefault() == null)
+                {
+                    // insert into database
+                    Location newLocation = new Location();
+                    newLocation.volunteerId = volunteer.volunteerId;
+                    //contactId=
+                    newLocation.locationType = "Canada";
+                    newLocation.address = convertNullToString(item.address);
+                    newLocation.city = convertNullToString(item.city);
+                    newLocation.province = convertNullToString(item.province);
+                    newLocation.postalcode = convertNullToString(item.postalcode);
+                    db.Locations.Add(newLocation);
+                    db.SaveChanges();
+                }
+                else
+                {
+                    Location existLocation = location.FirstOrDefault();
+                    existLocation.volunteerId = volunteer.volunteerId;
+                    //contactId=
+                    existLocation.locationType = "Canada";
+                    existLocation.address = convertNullToString(item.address);
+                    existLocation.city = convertNullToString(item.city);
+                    existLocation.province = convertNullToString(item.province);
+                    existLocation.postalcode = convertNullToString(item.postalcode);
+                    db.Entry(existLocation).State = EntityState.Modified;
+                    db.SaveChanges();
+                }
+            }
+
+        }
+
+        private void InsertOrUpateEmergencyContact(SmsCsvModel item)
+        {
+            var v = db.Volunteers.Where(model => model.constituentCode == item.constituentCode);
+            if (v.FirstOrDefault() != null)
+            {
+                Volunteer volunteer = v.FirstOrDefault();
+                var contact = db.EmergencyContacts.Where(l => l.volunteerId == volunteer.volunteerId);
+                if (contact.FirstOrDefault() == null)
+                {
+                    // insert into database
+                    EmergencyContact newContact = new EmergencyContact();
+                    newContact.volunteerId = volunteer.volunteerId;
+                    newContact.contactName = convertNullToString(item.contactName);
+                    newContact.relationship = convertNullToString(item.relationship);
+                    newContact.emergencyPhone = convertNullToString(item.emergencyPhone);
+                    newContact.comment = convertNullToString(item.comment);
+                    DateTime dateTime = parseStringToDateTime(item.dateGiven);
+                    newContact.createDate = dateTime;
+                    db.EmergencyContacts.Add(newContact);
+                    db.SaveChanges();
+                }
+                else
+                {
+                    // update into database
+                    EmergencyContact existContact = contact.FirstOrDefault();
+                    existContact.volunteerId = volunteer.volunteerId;
+                    existContact.contactName = convertNullToString(item.contactName);
+                    existContact.relationship = convertNullToString(item.relationship);
+                    existContact.emergencyPhone = convertNullToString(item.emergencyPhone);
+                    existContact.comment = convertNullToString(item.comment);
+                    DateTime dateTime = parseStringToDateTime(item.dateGiven);
+                    existContact.createDate = dateTime;
+                    db.Entry(existContact).State = EntityState.Modified;
+                    db.SaveChanges();
+                }
+            }
+        }
+        #endregion
+
+        #region Export Volunteer in Single Team
+        public ActionResult ExportVolunteerSingleTeamCsv()
+        {
+            List<Volunteer> volunteers = GetVolunteersWhoInSingleTeam();
+            List<SmsCsvModel> data = new List<SmsCsvModel>();
+
+            SmsCsvModel model;
+            Location location;
+
+            volunteers.Sort((x, y) => { return -x.constituentCode.CompareTo(y.constituentCode); });
+
+            foreach (Volunteer v in volunteers)
+            {
+                model = new SmsCsvModel();
+                model.title = v.title;
+                model.firstName = v.firstName;
+                model.lastName = v.lastName;
+                model.gender = v.gender;
+
+                model.importID = v.importID;
+                model.constituentCode = v.constituentCode;
+
+                model.orientation = v.orientation == "N/A" ? "" : v.orientation;
+                model.orientationDate = (DateTime.Now).ToString("MM/dd/yyyy");
+                model.orientationComment = "Festival " + DateTime.Now.Year;
+
+                model.transitPass = v.transitPass == "N/A" ? "" : v.transitPass;
+                model.transitPassDate = (DateTime.Now).ToString("MM/dd/yyyy");
+                model.transitPassComment = "Festival " + DateTime.Now.Year;
+
+                location = db.Locations.Where(l => l.volunteerId == v.volunteerId).FirstOrDefault();
+                if (location != null)
+                {
+                    if (location.locationType == "International")
+                    {
+                        model.address = convertNullToString(location.address);
+                        model.city = "";
+                        model.province = "";
+                        model.postalcode = "";
+                    }
+                    else
+                    {
+                        model.address = convertNullToString(location.address);
+                        model.city = convertNullToString(location.city);
+                        model.province = convertNullToString(location.province);
+                        model.postalcode = convertNullToString(location.postalcode);
+                    }
+                }
+                else
+                {
+                    model.address = "";
+                    model.city = "";
+                    model.province = "";
+                    model.postalcode = "";
+                }
+                model.homeType = "Home";
+                model.homePhone = v.homePhone;
+                model.cellType = "Cell";
+                model.cellPhone = v.cellPhone;
+                model.emailType = "Personal Email";
+                model.email = v.email;
+
+                EmergencyContact ec = db.EmergencyContacts.Where(e => e.volunteerId == v.volunteerId).FirstOrDefault();
+                if (ec != null)
+                {
+                    model.emergencyType = "Emergency Contact";
+                    model.emergencyPhone = ec.emergencyPhone;
+                    model.contactName = ec.contactName;
+                    model.comment = ec.comment;
+                    model.dateGiven = ((DateTime)ec.createDate).ToString("MM/dd/yyyy");
+                    model.relationship = ec.relationship;
+                    model.relationshipDate = (DateTime.Now).ToString("MM/dd/yyyy");
+                    model.relationshipComments = "Festival " + DateTime.Now.Year;
+                }
+                model.earnedBucks = getTotalEarnedBucks(v.volunteerId);
+                model.earnedBucksDate = (DateTime.Now).ToString("MM/dd/yyyy");
+                model.earnedBucksComment =   "Festival " + DateTime.Now.Year;
+
+                model.earnHours = getTotalEarnedHours(v.volunteerId);
+                model.earnHoursDate = (DateTime.Now).ToString("MM/dd/yyyy");
+                model.earnHoursComment = "Festival " + DateTime.Now.Year;
+
+                model.teamName = db.ShiftRecords.Where(s => s.volunteerId == v.volunteerId).Select(s => s.teamName).FirstOrDefault();
+                model.teamNameDate = (DateTime.Now).ToString("MM/dd/yyyy");
+                model.teamNameComment = "Festival " + DateTime.Now.Year;
+                
+                data.Add(model);
+            }
+            
+            data.Sort((x, y) => { return -x.postalcode.CompareTo(y.postalcode); });
+            data.Sort((x, y) => { return -x.constituentCode.CompareTo(y.constituentCode); });
+
+            string file_path = Server.MapPath("~/CsvDownload/");
+            String todayString = DateTime.Now.ToString("MMM_dd_yyyy");
+            string file_name = "Volunteer_sms_Single" + todayString + ".csv";
+            CsvContext cc = new CsvContext();
+            cc.Write(data, file_path + file_name);
+
+            System.Web.HttpResponse response = System.Web.HttpContext.Current.Response;
+            response.ClearContent();
+            response.Clear();
+            response.ContentType = "application/vnd.xls";
+            response.AddHeader("Content-Disposition", "attachment; filename=" + file_name + ";");
+            response.TransmitFile(file_path + file_name);
+            response.End();
+
+            return View();
+
+        }
+
+        public List<Volunteer> GetVolunteersWhoInSingleTeam()
+        {
+            List<Volunteer> volunteers = db.Volunteers.ToList();
+            List<Volunteer> volunteersInSingleTeam = new List<Volunteer>();
+
+            foreach (Volunteer item in volunteers)
+            {
+                int count = db.ShiftRecords.Where(s => s.volunteerId == item.volunteerId).Select(c => c.teamName).Distinct().Count();
+                if (count == 1)
+                {
+                    volunteersInSingleTeam.Add(item);
+                }
+            }
+            return volunteersInSingleTeam;
+        }
+        #endregion End of Export Volunteers in Single Team
+
+
+        #region Export Volunteer in Multiple Teams
+        public ActionResult ExportVolunteerMultipleTeamsCsv()
+        {
+            List<Volunteer> volunteers = GetVolunteersWhoInMultipleTeams();
+            List<SmsCsvModel> data = new List<SmsCsvModel>();
+
+            SmsCsvModel model;
+            Location location;
+
+
+
+            foreach (Volunteer v in volunteers)
+            {
+                var q = (from rec in db.ShiftRecords where rec.volunteerId == v.volunteerId select rec.teamName).Distinct();
+                List<String> teamNames = q.ToList();
+                if (teamNames != null)
+                {
+                    foreach (string teamName in teamNames)
+                    {
+                        model = new SmsCsvModel();
+                        
+                        
+                        model.earnedBucks = getTotalEarnedBucksByTeam(v.volunteerId, teamName);
+                        model.earnedBucksDate = (DateTime.Now).ToString("MM/dd/yyyy");
+                        model.earnedBucksComment = "Festival " + DateTime.Now.Year;
+                        
+                        model.earnHours = getTotalEarnedHoursByTeam(v.volunteerId, teamName);
+                        model.earnHoursDate = (DateTime.Now).ToString("MM/dd/yyyy");
+                        model.earnHoursComment = "Festival " + DateTime.Now.Year;
+                        
+                        model.teamName = teamName;
+                        model.teamNameDate = (DateTime.Now).ToString("MM/dd/yyyy");
+                        model.teamNameComment = "Festival " + DateTime.Now.Year;
+
+                        model.title = v.title;
+                        model.firstName = v.firstName;
+                        model.lastName = v.lastName;
+                        model.gender = v.gender;
+                        model.importID = v.importID;
+                        model.constituentCode = v.constituentCode;
+
+                        model.orientation = v.orientation == "N/A" ? "" : v.orientation;
+                        model.orientationDate = (DateTime.Now).ToString("MM/dd/yyyy");
+                        model.orientationComment = "Festival " + DateTime.Now.Year;
+
+                        model.transitPass = v.transitPass == "N/A" ? "" : v.transitPass;
+                        model.transitPassDate = (DateTime.Now).ToString("MM/dd/yyyy");
+                        model.transitPassComment = "Festival " + DateTime.Now.Year;
+
+                        location = db.Locations.Where(l => l.volunteerId == v.volunteerId).FirstOrDefault();
+                        if (location != null)
+                        {
+                            if (location.locationType == "International")
+                            {
+                                model.address = convertNullToString(location.address);
+                                model.city = "";
+                                model.province = "";
+                                model.postalcode = "";
+                            }
+                            else
+                            {
+                                model.address = convertNullToString(location.address);
+                                model.city = convertNullToString(location.city);
+                                model.province = convertNullToString(location.province);
+                                model.postalcode = convertNullToString(location.postalcode);
+                            }
+                        }
+                        else
+                        {
+                            model.address = "";
+                            model.city = "";
+                            model.province = "";
+                            model.postalcode = "";
+                        }
+                        model.homeType = "Home";
+                        model.homePhone = v.homePhone;
+                        model.cellType = "Cell";
+                        model.cellPhone = v.cellPhone;
+                        model.emailType = "Personal Email";
+                        model.email = v.email;
+
+                        EmergencyContact ec = db.EmergencyContacts.Where(e => e.volunteerId == v.volunteerId).FirstOrDefault();
+                        if (ec != null)
+                        {
+                            model.emergencyType = "Emergency Contact";
+                            model.emergencyPhone = ec.emergencyPhone;
+                            model.contactName = ec.contactName;
+                            model.comment = ec.comment;
+                            model.dateGiven = ((DateTime)ec.createDate).ToString("MM/dd/yyyy");
+                            model.relationship = ec.relationship;
+                            model.relationshipDate = (DateTime.Now).ToString("MM/dd/yyyy");
+                            model.relationshipComments = "Festival " + DateTime.Now.Year;
+                        }
+
+                        data.Add(model);
+                    }
+                }
+            }
+           
+            data.Sort((x, y) => { return -x.postalcode.CompareTo(y.postalcode); });
+            data.Sort((x, y) => { return -x.constituentCode.CompareTo(y.constituentCode); });
+
+            string file_path = Server.MapPath("~/CsvDownload/");
+            String todayString = DateTime.Now.ToString("MMM_dd_yyyy");
+            string file_name = "Volunteer_sms_Multiple_" + todayString + ".csv";
+            CsvContext cc = new CsvContext();
+            cc.Write(data, file_path + file_name);
+
+            System.Web.HttpResponse response = System.Web.HttpContext.Current.Response;
+            response.ClearContent();
+            response.Clear();
+            response.ContentType = "application/vnd.xls";
+            response.AddHeader("Content-Disposition", "attachment; filename=" + file_name + ";");
+            response.TransmitFile(file_path + file_name);
+            response.End();
+
+            return View();
+
+        }
+
+        public List<Volunteer> GetVolunteersWhoInMultipleTeams()
+        {
+            List<Volunteer> volunteers = db.Volunteers.ToList();
+            List<Volunteer> volunteersInMultipleTeams = new List<Volunteer>();
+
+            foreach (Volunteer item in volunteers)
+            {
+                int count = db.ShiftRecords.Where(s => s.volunteerId == item.volunteerId).Select(c => c.teamName).Distinct().Count();
+                if (count > 1)
+                {
+                    volunteersInMultipleTeams.Add(item);
+                }
+            }
+            return volunteersInMultipleTeams;
+        }
+        #endregion End of Export Volunteers in Multiple Teams
+
+
+        CsvFileDescription inputFileDescription = new CsvFileDescription
+        {
+            SeparatorChar = ',',
+            FirstLineHasColumnNames = true
+        };
+
+        public decimal getTotalEarnedBucks(int volunteerId = 0)
+        {
+            var calBucks = from r in db.ShiftRecords
+                           where r.volunteerId == volunteerId
+                           group r.earnedBucks by r.earnedBucks into data
+                           select new
+                           {
+                               earnedTotalBucks = data.Sum()
+                           };
+            return calBucks.AsEnumerable().Sum(r => r.earnedTotalBucks);
+        }
+
+        public decimal getTotalEarnedHours(int volunteerId = 0)
+        {
+            var calNewHours = from r in db.ShiftRecords
+                              where r.volunteerId == volunteerId
+                              group r.earnHours by r.earnHours into data
+                              select new
+                              {
+                                  earnedTotalHours = data.Sum()
+                              };
+            return calNewHours.AsEnumerable().Sum(r => r.earnedTotalHours);
+        }
+        public decimal getTotalEarnedBucksByTeam(int volunteerId = 0, string teamName = "")
+        {
+            var calBucks = from r in db.ShiftRecords
+                           where r.volunteerId == volunteerId && r.teamName == teamName
+                           group r.earnedBucks by r.earnedBucks into data
+                           select new
+                           {
+                               earnedTotalBucks = data.Sum()
+                           };
+            return calBucks.AsEnumerable().Sum(r => r.earnedTotalBucks);
+        }
+
+        public decimal getTotalEarnedHoursByTeam(int volunteerId = 0, string teamName = "")
+        {
+            var calNewHours = from r in db.ShiftRecords
+                              where r.volunteerId == volunteerId && r.teamName == teamName
+                              group r.earnHours by r.earnHours into data
+                              select new
+                              {
+                                  earnedTotalHours = data.Sum()
+                              };
+            return calNewHours.AsEnumerable().Sum(r => r.earnedTotalHours);
+        }
+
+        #region Tools
+        public DateTime parseStringToDateTime(String strDateTime)
+        {
+            if (strDateTime == null || strDateTime.Trim().Length < 1)
+            {
+                return DateTime.Now;
+            }
+            else
+            {
+                DateTime dt;
+                CultureInfo culture = CultureInfo.CreateSpecificCulture("en-US");
+                DateTime.TryParse(strDateTime, culture, DateTimeStyles.None, out dt);
+                return dt;
+            }
+
+        }
+
+        public string convertNullToString(string str)
+        {
+            return str == null ? "" : str;
+        }
+        public string convertNullToString(string str, string defaultValue)
+        {
+            if (str == null || str.Trim().Length < 1)
+            {
+                return defaultValue;
+            }
+            else
+            {
+                return str;
+            }
+
+        }
+        private String stringToTitleCase(String str)
+        {
+            if (str != null && str.Trim().Length > 1)
+            {
+                return tiFormatter.ToTitleCase(str);
+            }
+            else
+            {
+                return "";
+            }
+        }
+        private String stringToUpperCase(String str)
+        {
+            if (str != null && str.Trim().Length > 1)
+            {
+                return tiFormatter.ToUpper(str);
+            }
+            else
+            {
+                return "";
+            }
+        }
+        #endregion
+
+
+        public SmsCsvModel checkSMSCsvModel(SmsCsvModel model)
+        {
+            SmsCsvModel result = new SmsCsvModel();
+            result.title = convertNullToString(model.title);
+            result.importID = convertNullToString(model.importID);
+            result.firstName = stringToTitleCase(convertNullToString(model.firstName));
+            result.lastName = stringToTitleCase(convertNullToString(model.lastName));
+            result.gender = stringToTitleCase(convertNullToString(model.gender, "Unknown"));
+            result.constituentCode = convertNullToString(model.constituentCode);
+            result.address = convertNullToString(model.address);
+            result.relationship = convertNullToString(model.relationship);
+            result.city = stringToTitleCase(convertNullToString(model.city));
+            result.province = stringToUpperCase(convertNullToString(model.province));
+            result.postalcode = stringToUpperCase(convertNullToString(model.postalcode));
+            #region check home type
+
+            if (model.homeType.Equals("Home", StringComparison.CurrentCultureIgnoreCase))
+            {
+                result.homeType = convertNullToString(model.homeType);
+                result.homePhone = convertNullToString(model.homePhone);
+            }
+            if (model.homeType.Equals("Cell", StringComparison.CurrentCultureIgnoreCase))
+            {
+                result.cellType = convertNullToString(model.homeType);
+                result.cellPhone = convertNullToString(model.homePhone);
+            }
+            if (model.homeType.Equals("Emergency Contact", StringComparison.CurrentCultureIgnoreCase))
+            {
+                result.emergencyType = convertNullToString(model.homeType);
+                result.emergencyPhone = convertNullToString(model.homePhone);
+            }
+            if (model.homeType.Equals("Personal Email", StringComparison.CurrentCultureIgnoreCase))
+            {
+                result.emailType = convertNullToString(model.homeType);
+                result.email = convertNullToString(model.homePhone);
+            }
+            #endregion
+
+            #region check cell type
+            if (model.cellType.Equals("Cell", StringComparison.CurrentCultureIgnoreCase))
+            {
+                result.cellType = convertNullToString(model.cellType);
+                result.cellPhone = convertNullToString(model.cellPhone);
+            }
+            if (model.cellType.Equals("Home", StringComparison.CurrentCultureIgnoreCase))
+            {
+                result.homeType = convertNullToString(model.cellType);
+                result.homePhone = convertNullToString(model.cellPhone);
+            }
+            if (model.cellType.Equals("Emergency Contact", StringComparison.CurrentCultureIgnoreCase))
+            {
+                result.emergencyType = convertNullToString(model.cellType);
+                result.emergencyPhone = convertNullToString(model.cellPhone);
+            }
+            if (model.cellType.Equals("Personal Email", StringComparison.CurrentCultureIgnoreCase))
+            {
+                result.emailType = convertNullToString(model.cellType);
+                result.email = convertNullToString(model.cellPhone);
+            }
+            #endregion
+
+            #region Emergency Contact
+            if (model.emergencyType.Equals("Emergency Contact", StringComparison.CurrentCultureIgnoreCase))
+            {
+                result.emergencyType = convertNullToString(model.emergencyType);
+                result.emergencyPhone = convertNullToString(model.emergencyPhone);
+            }
+            if (model.emergencyType.Equals("Cell", StringComparison.CurrentCultureIgnoreCase))
+            {
+                result.cellType = convertNullToString(model.emergencyType);
+                result.cellPhone = convertNullToString(model.emergencyPhone);
+            }
+            if (model.emergencyType.Equals("Home", StringComparison.CurrentCultureIgnoreCase))
+            {
+                result.homeType = convertNullToString(model.emergencyType);
+                result.homePhone = convertNullToString(model.emergencyPhone);
+            }
+            if (model.emergencyType.Equals("Personal Email", StringComparison.CurrentCultureIgnoreCase))
+            {
+                result.emailType = convertNullToString(model.emergencyType);
+                result.email = convertNullToString(model.emergencyPhone);
+            }
+            #endregion
+
+            #region Personal Email
+            if (model.emailType.Equals("Personal Email", StringComparison.CurrentCultureIgnoreCase))
+            {
+                result.emailType = convertNullToString(model.emailType);
+                result.email = convertNullToString(model.email);
+            }
+            if (model.emailType.Equals("Cell", StringComparison.CurrentCultureIgnoreCase))
+            {
+                result.cellType = convertNullToString(model.emailType);
+                result.cellPhone = convertNullToString(model.email);
+            }
+            if (model.emailType.Equals("Emergency Contact", StringComparison.CurrentCultureIgnoreCase))
+            {
+                result.emergencyType = convertNullToString(model.emailType);
+                result.emergencyPhone = convertNullToString(model.email);
+            }
+            if (model.emailType.Equals("Home", StringComparison.CurrentCultureIgnoreCase))
+            {
+                result.homeType = convertNullToString(model.emailType);
+                result.homePhone = convertNullToString(model.email);
+            }
+            #endregion
+
+            result.contactName = convertNullToString(model.contactName);
+            result.dateGiven = convertNullToString(model.dateGiven, DateTime.Now.ToShortDateString());
+            result.comment = convertNullToString(model.comment, "N/A");
+            result.orientation = convertNullToString(model.orientation, "N/A");
+            result.transitPass = convertNullToString(model.transitPass, "N/A");
+            return result;
+        }
+    }
+}

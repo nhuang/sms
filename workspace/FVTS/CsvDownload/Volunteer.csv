@@ -1,0 +1,3 @@
+﻿volunteerId,firstName,lastName,nickName,birthday,gender,status,primaryPhone,otherPhone,createOn,createBy,modifiedOn,modifiedBy,activatedOn,deactivatedOn,note,token
+1,Hank,Huang,Hankie,2/12/1993 12:00:00 AM,Male,Activate,(780) 267-8688,(312) 312-3123,2/12/2013 11:21:09 PM,admin,2/13/2013 1:02:57 AM,admin,2/12/2013 12:00:00 AM,,"",130052100694180012
+2,Ann,Huang,Ann,2/13/1993 12:00:00 AM,Female,Activate,(987) 654-3244,(132) 123-1231,2/13/2013 12:31:54 AM,admin,2/13/2013 1:03:21 AM,admin,2/13/2013 12:00:00 AM,,,130052143144503449

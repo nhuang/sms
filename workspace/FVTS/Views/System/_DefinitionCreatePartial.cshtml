@@ -1,0 +1,37 @@
+﻿@model FVTS.Models.DefinitionModel
+
+@using (Html.BeginForm("Create","System"))
+{
+    @Html.ValidationSummary(true)
+
+    <table>
+        <tr>
+            
+            <td><input type="text" id="displayName" name="displayName" class="k-textbox" placeholder="displayName" required validationMessage="Please enter {0}" /></td>
+            <td><input type="text" id="keyName" name="keyName" class="k-textbox" placeholder="key word" required validationMessage="Please enter {0}" /></td>
+            <td><input type="text" id="keyValue" name="keyValue" class="k-textbox" placeholder="Value in database as ..." required validationMessage="Please enter {0}" /></td>
+            <td>
+                @(Html.Kendo().AutoComplete()
+                      .Name("keyGroup")
+                      .DataTextField("keyGroup")
+                      .DataSource(source =>
+                      {
+                          source.Read(read =>
+                          {
+                              read.Action("QuickSearchGroupName", "System");
+                          });
+                          source.ServerFiltering(true);
+                      })
+                      .Placeholder("Value group as  as ...")
+                      .Filter("contains")
+                         .Suggest(true)
+                         .MinLength(1)
+                )
+            </td>
+            <td>@Html.Kendo().NumericTextBoxFor(model => model.sequence).Min(1).Format("#")</td>
+
+        </tr>
+    </table>
+    <input type="submit" class="k-button" value="Create New Definition" />
+}
+

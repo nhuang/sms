@@ -1,0 +1,39 @@
+﻿@using FVTS.Models;
+
+
+@{
+    VolunteerProfileModel volunteerProfile = (VolunteerProfileModel)ViewBag.VolunteerProfile;
+    IEnumerable<VolunteerLocationModel> locations = (IEnumerable<VolunteerLocationModel>)ViewBag.VolunteerAddress;
+    IEnumerable<VolunteerContactModel> contacts = (IEnumerable<VolunteerContactModel>)ViewBag.VolunteerContacts;
+    VolunteerLocationModel newLocation = new VolunteerLocationModel();
+    newLocation.volunteerId = volunteerProfile.volunteerId;
+    VolunteerContactModel newContact = new VolunteerContactModel();
+    newContact.volunteerId = volunteerProfile.volunteerId;
+    var session = HttpContext.Current.Session;
+    if (session["VolunteerId"] == null)
+    {
+        Session.Add("VolunteerId", volunteerProfile.volunteerId);
+    }
+    else
+    {
+        session["VolunteerId"] = volunteerProfile.volunteerId;
+    }
+    ViewBag.Title = "Volunteer Profile - " + volunteerProfile.constituentCode;
+}
+<div>
+    <div> @Html.Partial("_VolunteerProfilePartial",@volunteerProfile)</div>
+    <div> @Html.Partial("_VolunteerNewAddressPartial",@newLocation)</div>
+    <div> @Html.Partial("_VolunteerAddressPartial",@locations)</div>
+    <div> @Html.Partial("_VolunteerNewContactPartial",@newContact)</div>
+    <div> @Html.Partial("_VolunteerContactPartial",@contacts)</div>
+</div>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<script type="text/javascript">
+    jQuery(function ($) {
+        $("#homePhone").mask("(999) 999-9999");
+        $("#cellPhone").mask("(999) 999-9999");
+    });
+</script>

@@ -1,0 +1,13 @@
+﻿@using FVTS.Models;
+@model IEnumerable<FVTS.Models.DefinitionModel>
+
+@{
+    ViewBag.Title = "Definition";
+    DefinitionModel newModel = new DefinitionModel();
+}
+
+<strong>Definition</strong>
+
+<div> @Html.Partial("_DefinitionCreatePartial",@newModel)</div>
+
+<div> @Html.Partial("_DefinitionGridPartial",@Model)</div>

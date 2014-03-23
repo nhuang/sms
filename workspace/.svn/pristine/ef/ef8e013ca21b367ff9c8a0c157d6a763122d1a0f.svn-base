@@ -1,0 +1,139 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="FVTSModel1.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="FVTSModel1StoreContainer">
+    <EntitySet Name="Definition" EntityType="FVTSModel1.Store.Definition" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="EmergencyContact" EntityType="FVTSModel1.Store.EmergencyContact" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Location" EntityType="FVTSModel1.Store.Location" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ShiftRecord" EntityType="FVTSModel1.Store.ShiftRecord" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="Volunteer" EntityType="FVTSModel1.Store.Volunteer" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="FK_EMERGENC_REFERENCE_VOLUNTEE" Association="FVTSModel1.Store.FK_EMERGENC_REFERENCE_VOLUNTEE">
+      <End Role="Volunteer" EntitySet="Volunteer" />
+      <End Role="EmergencyContact" EntitySet="EmergencyContact" />
+    </AssociationSet>
+    <AssociationSet Name="FK_LOCATION_REFERENCE_VOLUNTEE" Association="FVTSModel1.Store.FK_LOCATION_REFERENCE_VOLUNTEE">
+      <End Role="Volunteer" EntitySet="Volunteer" />
+      <End Role="Location" EntitySet="Location" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SHIFTREC_RECORDS_VOLUNTEE" Association="FVTSModel1.Store.FK_SHIFTREC_RECORDS_VOLUNTEE">
+      <End Role="Volunteer" EntitySet="Volunteer" />
+      <End Role="ShiftRecord" EntitySet="ShiftRecord" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="Definition">
+    <Key>
+      <PropertyRef Name="definitionId" />
+    </Key>
+    <Property Name="definitionId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="displayName" Type="nvarchar" Nullable="false" MaxLength="100" />
+    <Property Name="keyName" Type="nvarchar" Nullable="false" MaxLength="100" />
+    <Property Name="keyValue" Type="nvarchar" Nullable="false" MaxLength="512" />
+    <Property Name="keyGroup" Type="nvarchar" Nullable="false" MaxLength="100" />
+    <Property Name="sequence" Type="int" />
+  </EntityType>
+  <EntityType Name="EmergencyContact">
+    <Key>
+      <PropertyRef Name="contactId" />
+    </Key>
+    <Property Name="contactId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="volunteerId" Type="int" />
+    <Property Name="relationship" Type="nvarchar" MaxLength="50" />
+    <Property Name="emergencyPhone" Type="nvarchar" MaxLength="20" />
+    <Property Name="comment" Type="nvarchar" MaxLength="2048" />
+    <Property Name="createDate" Type="date" />
+    <Property Name="contactName" Type="nvarchar" MaxLength="256" />
+  </EntityType>
+  <EntityType Name="Location">
+    <Key>
+      <PropertyRef Name="locationId" />
+    </Key>
+    <Property Name="locationId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="volunteerId" Type="int" />
+    <Property Name="contactId" Type="int" />
+    <Property Name="locationType" Type="nvarchar" MaxLength="50" />
+    <Property Name="address" Type="nvarchar" MaxLength="100" />
+    <Property Name="city" Type="nvarchar" MaxLength="100" />
+    <Property Name="province" Type="nvarchar" MaxLength="100" />
+    <Property Name="postalcode" Type="nvarchar" MaxLength="100" />
+    <Property Name="country" Type="nvarchar" MaxLength="100" />
+  </EntityType>
+  <EntityType Name="ShiftRecord">
+    <Key>
+      <PropertyRef Name="recordId" />
+    </Key>
+    <Property Name="volunteerId" Type="int" />
+    <Property Name="recordId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="teamName" Type="nvarchar" MaxLength="100" />
+    <Property Name="startOn" Type="datetime" Nullable="false" />
+    <Property Name="endOn" Type="datetime" />
+    <Property Name="createOn" Type="datetime" Nullable="false" />
+    <Property Name="createBy" Type="nvarchar" Nullable="false" MaxLength="100" />
+    <Property Name="modifiedOn" Type="datetime" Nullable="false" />
+    <Property Name="modifiedBy" Type="nvarchar" Nullable="false" MaxLength="100" />
+    <Property Name="earnedBucks" Type="numeric" Nullable="false" Precision="10" Scale="2" />
+    <Property Name="earnHours" Type="numeric" Nullable="false" Scale="2" />
+  </EntityType>
+  <EntityType Name="Volunteer">
+    <Key>
+      <PropertyRef Name="volunteerId" />
+    </Key>
+    <Property Name="volunteerId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+    <Property Name="constituentCode" Type="nvarchar" MaxLength="10" />
+    <Property Name="title" Type="nvarchar" MaxLength="10" />
+    <Property Name="firstName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="lastName" Type="nvarchar" Nullable="false" MaxLength="50" />
+    <Property Name="nickName" Type="nvarchar" MaxLength="50" />
+    <Property Name="birthday" Type="date" />
+    <Property Name="status" Type="nvarchar" MaxLength="20" />
+    <Property Name="gender" Type="nvarchar" MaxLength="10" />
+    <Property Name="homePhone" Type="nvarchar" MaxLength="20" />
+    <Property Name="cellPhone" Type="nvarchar" MaxLength="20" />
+    <Property Name="createOn" Type="datetime" Nullable="false" />
+    <Property Name="createBy" Type="nvarchar" Nullable="false" MaxLength="256" />
+    <Property Name="modifiedOn" Type="datetime" Nullable="false" />
+    <Property Name="modifiedBy" Type="nvarchar" MaxLength="256" />
+    <Property Name="activatedOn" Type="datetime" />
+    <Property Name="deactivatedOn" Type="datetime" />
+    <Property Name="note" Type="nvarchar" />
+    <Property Name="token" Type="nvarchar" MaxLength="100" />
+    <Property Name="email" Type="nvarchar" MaxLength="256" />
+    <Property Name="orientation" Type="nvarchar" MaxLength="20" />
+    <Property Name="transitPass" Type="nvarchar" MaxLength="512" />
+    <Property Name="importID" Type="nvarchar" MaxLength="512" />
+  </EntityType>
+  <Association Name="FK_EMERGENC_REFERENCE_VOLUNTEE">
+    <End Role="Volunteer" Type="FVTSModel1.Store.Volunteer" Multiplicity="0..1" />
+    <End Role="EmergencyContact" Type="FVTSModel1.Store.EmergencyContact" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Volunteer">
+        <PropertyRef Name="volunteerId" />
+      </Principal>
+      <Dependent Role="EmergencyContact">
+        <PropertyRef Name="volunteerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_LOCATION_REFERENCE_VOLUNTEE">
+    <End Role="Volunteer" Type="FVTSModel1.Store.Volunteer" Multiplicity="0..1" />
+    <End Role="Location" Type="FVTSModel1.Store.Location" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Volunteer">
+        <PropertyRef Name="volunteerId" />
+      </Principal>
+      <Dependent Role="Location">
+        <PropertyRef Name="volunteerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SHIFTREC_RECORDS_VOLUNTEE">
+    <End Role="Volunteer" Type="FVTSModel1.Store.Volunteer" Multiplicity="0..1" />
+    <End Role="ShiftRecord" Type="FVTSModel1.Store.ShiftRecord" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Volunteer">
+        <PropertyRef Name="volunteerId" />
+      </Principal>
+      <Dependent Role="ShiftRecord">
+        <PropertyRef Name="volunteerId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema>

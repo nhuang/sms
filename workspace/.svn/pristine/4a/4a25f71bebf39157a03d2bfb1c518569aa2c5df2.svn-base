@@ -1,0 +1,106 @@
+﻿@model IEnumerable<FVTS.Models.VolunteerProfileModel>
+
+@{
+    ViewBag.Title = "Search Volunteer";
+    var roles = (SimpleRoleProvider)Roles.Provider;  
+}
+
+@using (Ajax.BeginForm("Search", "Volunteer", new AjaxOptions
+{
+    HttpMethod = "GET"
+}))
+{ 
+    @(Html.Kendo().AutoComplete()
+      .Name("name")
+      .DataTextField("firstName")
+      .DataSource(source =>
+      {
+          source.Read(read =>
+          {
+              read.Action("QuickSearch", "Volunteer");
+          });
+          source.ServerFiltering(true);
+      })
+      .Filter("contains")
+         .Suggest(true)
+         .MinLength(2)
+      )
+
+    <input type="submit" class="k-button" value="Search" />
+
+}
+
+@(Html.Kendo().Grid(Model)
+    .Name("Volunteer")
+    .Columns(columns =>
+    {
+        columns.Bound(u => u.volunteerId).Visible(false);
+        columns.Bound(u => u.constituentCode).Title("ID");
+        columns.Bound(u => u.title);
+        columns.Bound(u => u.firstName).Title("FName");
+        columns.Bound(u => u.lastName).Title("LName");
+        //columns.Bound(u => u.email).Title("Email");
+        //columns.Bound(u => u.birthday).Format("{0:dd/MMM/yyyy}").Title("Birthday"); ;
+        columns.Bound(u => u.gender).Title("Gender");
+        columns.Bound(u => u.homePhone).Title("Home Phone");
+        columns.Bound(u => u.cellPhone).Title("Cell");
+        columns.Command(command => { 
+            command.Custom("Shift").Click("editShift");
+            if (WebSecurity.IsAuthenticated && (roles.GetRolesForUser(WebSecurity.CurrentUserName).Contains("Administrator") || roles.GetRolesForUser(WebSecurity.CurrentUserName).Contains("Coordinator")))
+            {
+                command.Custom("View").Click("viewProfile");
+                command.Custom("Edit").Click("editProfile");
+            }
+        
+        }).Title("Function");
+    })
+    .Pageable()
+    .Navigatable()
+    .Filterable()
+    .Sortable()
+    .ColumnMenu()
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Read(read => read.Action("Editing_Read", "Volunteer"))
+        .Model(model =>
+            {
+                //The unique identifier (primary key) of the model is the ProductID property
+                model.Id(v => v.volunteerId);
+
+                // Declare a model field and optionally specify its default value (used when a new model instance is created)
+                model.Field(v => v.constituentCode).Editable(false);
+            })
+        .Aggregates(aggregates =>
+            {
+                aggregates.Add(v => v.firstName);
+                aggregates.Add(v => v.lastName);
+                aggregates.Add(v => v.constituentCode);
+            })  
+            
+    )
+ )
+
+<script type="text/javascript">
+    var detailsTemplate = kendo.template($("#template").html());
+
+    function editProfile(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        var id = dataItem.volunteerId;
+        window.location.href = "@Url.Action("Edit", "Volunteer")" + "/" + id;
+    }
+
+    function viewProfile(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        var id = dataItem.volunteerId;
+        window.location.href = "@Url.Action("Details", "Volunteer")" + "/" + id;
+    }
+
+    function editShift(e) {
+        e.preventDefault();
+        var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+        var id = dataItem.volunteerId;
+        window.location.href = "@Url.Action("VolunteerHistory", "Volunteer")" + "/" + id;
+    }
+</script>

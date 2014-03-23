@@ -1,0 +1,51 @@
+﻿@model IEnumerable<FVTS.Models.VolunteerContactModel>
+<h4>Emergency Contacts</h4>
+@(Html.Kendo().Grid(Model)    
+    .Name("Contact")
+    .Columns(columns =>
+    {
+        columns.Bound(e => e.contactId).Visible(false);
+        columns.Bound(e => e.volunteerId).Visible(false);
+        columns.Bound(e => e.relationship);
+        columns.Bound(e => e.contactName);
+        columns.Bound(e => e.emergencyPhone);
+        columns.Bound(e => e.comment);
+        columns.Command(command => { command.Edit(); command.Destroy(); }).Width(200); ;   
+    })
+    .Editable(editable => editable.Mode(GridEditMode.InLine))
+    //.HtmlAttributes(new { style = "height: 675px" })
+    .Pageable()
+    .Sortable()
+    .Filterable()
+    .Scrollable()
+    .Reorderable(reorder => reorder.Columns(true))
+    .Selectable(selectable => selectable.Mode(GridSelectionMode.Single))
+    .Resizable(resize => resize.Columns(true))
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .ServerOperation(true)
+        .Events(events => events.Error("error_handler"))
+        .Model(model => model.Id(u => u.volunteerId))
+        .Create("Contact_Create", "Volunteer")
+        .Read("Contact_Read", "Volunteer")
+        .Update("Contact_Update", "Volunteer")
+        .Destroy("Contact_Destroy", "Volunteer")
+    ).ColumnMenu()
+
+)
+
+<script type="text/javascript">
+    function error_handler(e) {
+        if (e.errors) {
+            var message = "Errors:\n";
+            $.each(e.errors, function (key, value) {
+                if ('errors' in value) {
+                    $.each(value.errors, function () {
+                        message += this + "\n";
+                    });
+                }
+            });
+            alert(message);
+        }
+    }
+</script>

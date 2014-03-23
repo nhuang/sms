@@ -1,0 +1,92 @@
+﻿@using FVTS.Models;
+@model FVTS.Models.VolunteerLocationModel
+
+<h4>Volunteer New Address</h4>
+
+@using (Html.BeginForm("CreateNewLocationForVolunteer", "Volunteer"))
+{
+    @Html.ValidationSummary(true)
+    <input type="hidden" name="volunteerId" value='@Model.volunteerId' />
+    <table style="width: 100%">
+        <tr>
+            <td>@Html.LabelFor(model => model.locationType)</td>
+            <td>
+                <input id="location_description" name="location.description" type="text" />
+                <script>
+                    jQuery(function () { jQuery("#location_description").kendoDropDownList({ "dataSource": { "transport": { "prefix": "", "read": { "url": "/Definition/LocationType_List_Read" } }, "serverFiltering": true, "filter": [], "schema": { "errors": "Errors" } }, "dataTextField": "keyName", "dataValueField": "keyValue", "index": 0 }); });
+                </script>
+            </td>
+            <td>@Html.LabelFor(model => model.address)</td>
+            <td colspan="3">
+                <input id="address" name="address" required class="k-textbox" style="width: 100%;" type="text" />
+            </td>
+        </tr>
+        <tr>
+            <td>@Html.LabelFor(model => model.city)</td>
+            <td>
+                @(Html.Kendo().AutoCompleteFor(m => m.city)
+              .DataTextField("city")
+              .DataSource(source =>
+              {
+                  source.Read(read =>
+                  {
+                      read.Action("AutoComplete_City", "Definition");
+                  });
+                  source.ServerFiltering(true);
+              })
+              .Filter("contains")
+                 .Suggest(true)
+                 .MinLength(2)
+              )
+                @Html.ValidationMessageFor(model => model.city)
+            </td>
+            <td>@Html.LabelFor(model => model.postalcode)</td>
+            <td>@Html.Kendo().AutoComplete().Name("postalcode")</td>
+            <td>
+                @(Html.Kendo().DropDownList()
+                      .Name("province")
+                      .DataTextField("keyName")
+                      .DataValueField("keyValue")
+                      .DataSource(source =>
+                        {
+                            source.Read(read =>
+                            {
+                                read.Action("Province_List_Read", "Definition"); //Set the Action and Controller name
+                            })
+                            .ServerFiltering(true); //If true the DataSource will not filter the data on the client.
+                        })
+                      .SelectedIndex(0)
+                  )
+            </td>
+            <td>
+                @(Html.Kendo().AutoCompleteFor(m => m.country)
+              .DataTextField("country")
+              .Value("Canada")
+              .DataSource(source =>
+              {
+                  source.Read(read =>
+                  {
+                      read.Action("AutoComplete_Country", "Definition");
+                  });
+                  source.ServerFiltering(true);
+              })
+              .Filter("contains")
+                 .Suggest(true)
+                 .MinLength(2)
+              )
+            </td>
+        </tr>
+        <tr>
+            <td rowspan="6">
+                <input type="submit" class="k-button" value="New Address" />
+            </td>
+        </tr>
+    </table>
+   
+}
+
+<script type="text/javascript">
+    jQuery(function ($) {
+        $("#postalcode").mask("a9a 9a9");
+    });
+</script>

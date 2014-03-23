@@ -1,0 +1,240 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using FVTS.Models;
+using Kendo.Mvc.Extensions;
+using Kendo.Mvc.UI;
+using WebMatrix.WebData;
+using System.Web.Security;
+using Microsoft.Web.WebPages.OAuth;
+
+
+namespace FVTS.Controllers
+{
+    [Authorize]
+    public class DefinitionController : Controller
+    {
+        private FVTSEntities db = new FVTSEntities();
+        // GET: /Definition/
+
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        public ActionResult Province_List_Read([DataSourceRequest]DataSourceRequest request)
+        {
+            var result = db.Definitions.Where(d => d.keyGroup.Contains("Province")).OrderBy(d => d.keyName).Select(model => new DefinitionModel
+            {
+                keyName = model.keyName,
+                keyValue = model.keyValue
+            }).Take(100);
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Title_List_Read([DataSourceRequest]DataSourceRequest request)
+        {
+            var result = db.Definitions.Where(d => d.keyGroup.Contains("Title")).Select(model => new DefinitionModel
+            {
+                keyName = model.keyName,
+                keyValue = model.keyValue
+            }).Take(100);
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Team_List_Read([DataSourceRequest]DataSourceRequest request)
+        {
+            var result = db.Definitions.Where(d => d.keyGroup.Contains("Team")).Select(model => new DefinitionModel
+            {
+                keyName = model.keyName,
+                keyValue = model.keyValue
+            }).Take(100);
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+        
+        public ActionResult TransitPass_List_Read([DataSourceRequest]DataSourceRequest request)
+        {
+            var result = db.Definitions.Where(d => d.keyGroup.Contains("TransitPass")).Select(model => new DefinitionModel
+            {
+                keyName = model.keyName,
+                keyValue = model.keyValue
+            }).Take(100);
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Gender_List_Read([DataSourceRequest]DataSourceRequest request)
+        {
+            var result = db.Definitions.Where(d => d.keyGroup.Contains("Gender")).Select(model => new DefinitionModel
+            {
+                keyName = model.keyName,
+                keyValue = model.keyValue
+            }).Take(100);
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Orientation_List_Read([DataSourceRequest]DataSourceRequest request)
+        {
+            var result = db.Definitions.Where(d => d.keyGroup.Contains("Orientation")).Select(model => new DefinitionModel
+            {
+                keyName = model.keyName,
+                keyValue = model.keyValue
+            }).Take(100);
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult ActiviteStatus_List_Read([DataSourceRequest]DataSourceRequest request)
+        {
+            var result = db.Definitions.Where(d => d.keyGroup.Contains("ActiviteStatus")).Select(model => new DefinitionModel
+            {
+                keyName = model.keyName,
+                keyValue = model.keyValue
+            }).Take(100);
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult LocationType_List_Read([DataSourceRequest]DataSourceRequest request)
+        {
+            var result = db.Definitions.Where(d => d.keyGroup.Contains("LocationType")).Select(model => new DefinitionModel
+            {
+                keyName = model.keyName,
+                keyValue = model.keyValue
+            }).Take(100);
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+
+        #region autocomplete
+
+        public ActionResult AutoComplete_Relationship([DataSourceRequest]DataSourceRequest request)
+        {
+            string searchValue = Request.Params["filter[filters][0][value]"];
+            return Json(GetRelationShip(searchValue), JsonRequestBehavior.AllowGet);
+        }
+
+        private IEnumerable<EmergencyContact> GetRelationShip(string name)
+        {
+
+            string searchValue = Request.Params["filter[filters][0][value]"];
+            return db.EmergencyContacts.Where(v => v.relationship.Contains(name))
+                .Take(10).Select(emergencyContact => new EmergencyContact
+                {
+                    relationship = emergencyContact.relationship
+                }).Distinct();
+        }
+
+        // -----------------------------
+        public ActionResult AutoComplete_FirstName()
+        {
+            string searchValue = Request.Params["filter[filters][0][value]"];
+            return Json(GetVolunteerFirstName(searchValue), JsonRequestBehavior.AllowGet);
+        }
+
+        private IEnumerable<VolunteerProfileModel> GetVolunteerFirstName(string name)
+        {
+
+            string searchValue = Request.Params["filter[filters][0][value]"];
+            return db.Volunteers.Where(v => v.firstName.Contains(name))
+                .Take(10).Select(volunteer => new VolunteerProfileModel
+                {
+                    firstName = volunteer.firstName
+                }).Distinct();
+        }
+        // -----------------------------
+        public ActionResult AutoComplete_LastName()
+        {
+            string searchValue = Request.Params["filter[filters][0][value]"];
+            return Json(GetVolunteerLastName(searchValue), JsonRequestBehavior.AllowGet);
+        }
+        private IEnumerable<VolunteerProfileModel> GetVolunteerLastName(string name)
+        {
+
+            string searchValue = Request.Params["filter[filters][0][value]"];
+            return db.Volunteers.Where(v => v.lastName.Contains(name))
+                .Take(10).Select(volunteer => new VolunteerProfileModel
+                {
+                    lastName = volunteer.lastName
+                }).Distinct();
+        }
+
+        // -----------------------------
+        public ActionResult AutoComplete_NickName()
+        {
+            string searchValue = Request.Params["filter[filters][0][value]"];
+            return Json(GetVolunteerNickName(searchValue), JsonRequestBehavior.AllowGet);
+        }
+
+        private IEnumerable<VolunteerProfileModel> GetVolunteerNickName(string name)
+        {
+
+            string searchValue = Request.Params["filter[filters][0][value]"];
+            return db.Volunteers.Where(v => v.nickName.Contains(name))
+                .Take(10).Select(volunteer => new VolunteerProfileModel
+                {
+                    nickName = volunteer.nickName
+                }).Distinct();
+        }
+        // -----------------------------
+        public ActionResult AutoComplete_City()
+        {
+            string searchValue = Request.Params["filter[filters][0][value]"];
+            return Json(GetCity(searchValue), JsonRequestBehavior.AllowGet);
+        }
+        private IEnumerable<VolunteerLocationModel> GetCity(string name)
+        {
+
+            string searchValue = Request.Params["filter[filters][0][value]"];
+            return db.Locations.Where(l => l.city.Contains(name))
+                .Take(10).Select(location => new VolunteerLocationModel
+                {
+                    city = location.city
+                }).Distinct();
+        }
+
+        // -----------------------------
+        public ActionResult AutoComplete_Country()
+        {
+            string searchValue = Request.Params["filter[filters][0][value]"];
+            return Json(GetCountry(searchValue), JsonRequestBehavior.AllowGet);
+        }
+        private IEnumerable<VolunteerLocationModel> GetCountry(string name)
+        {
+            string searchValue = Request.Params["filter[filters][0][value]"];
+            return db.Locations.Where(l => l.country.Contains(name))
+                .Take(10).Select(location => new VolunteerLocationModel
+                {
+                    country = location.country
+                }).Distinct();
+        }
+        // -----------------------------
+        public ActionResult AutoComplete_PostalCode()
+        {
+            string searchValue = Request.Params["filter[filters][0][value]"];
+            return Json(GetPostalCode(searchValue), JsonRequestBehavior.AllowGet);
+        }
+        private IEnumerable<VolunteerLocationModel> GetPostalCode(string name)
+        {
+
+            string searchValue = Request.Params["filter[filters][0][value]"];
+            return db.Locations.Where(l => l.postalcode.Contains(name))
+                .Take(10).Select(location => new VolunteerLocationModel
+                {
+                    postalcode = location.postalcode
+                }).Distinct();
+        }
+
+
+        #endregion autocomplete
+    }
+}

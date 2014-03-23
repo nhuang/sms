@@ -1,0 +1,422 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="FVTSModel1.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityContainer Name="FVTSModel1StoreContainer">
+          <EntitySet Name="Definition" EntityType="FVTSModel1.Store.Definition" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="EmergencyContact" EntityType="FVTSModel1.Store.EmergencyContact" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Location" EntityType="FVTSModel1.Store.Location" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="ShiftRecord" EntityType="FVTSModel1.Store.ShiftRecord" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="Volunteer" EntityType="FVTSModel1.Store.Volunteer" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="FK_EMERGENC_REFERENCE_VOLUNTEE" Association="FVTSModel1.Store.FK_EMERGENC_REFERENCE_VOLUNTEE">
+            <End Role="Volunteer" EntitySet="Volunteer" />
+            <End Role="EmergencyContact" EntitySet="EmergencyContact" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LOCATION_REFERENCE_VOLUNTEE" Association="FVTSModel1.Store.FK_LOCATION_REFERENCE_VOLUNTEE">
+            <End Role="Volunteer" EntitySet="Volunteer" />
+            <End Role="Location" EntitySet="Location" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SHIFTREC_RECORDS_VOLUNTEE" Association="FVTSModel1.Store.FK_SHIFTREC_RECORDS_VOLUNTEE">
+            <End Role="Volunteer" EntitySet="Volunteer" />
+            <End Role="ShiftRecord" EntitySet="ShiftRecord" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Definition">
+          <Key>
+            <PropertyRef Name="definitionId" />
+          </Key>
+          <Property Name="definitionId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="displayName" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="keyName" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="keyValue" Type="nvarchar" Nullable="false" MaxLength="512" />
+          <Property Name="keyGroup" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="sequence" Type="int" />
+        </EntityType>
+        <EntityType Name="EmergencyContact">
+          <Key>
+            <PropertyRef Name="contactId" />
+          </Key>
+          <Property Name="contactId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="volunteerId" Type="int" />
+          <Property Name="relationship" Type="nvarchar" MaxLength="50" />
+          <Property Name="emergencyPhone" Type="nvarchar" MaxLength="20" />
+          <Property Name="comment" Type="nvarchar" MaxLength="2048" />
+          <Property Name="createDate" Type="date" />
+          <Property Name="contactName" Type="nvarchar" MaxLength="256" />
+        </EntityType>
+        <EntityType Name="Location">
+          <Key>
+            <PropertyRef Name="locationId" />
+          </Key>
+          <Property Name="locationId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="volunteerId" Type="int" />
+          <Property Name="contactId" Type="int" />
+          <Property Name="locationType" Type="nvarchar" MaxLength="50" />
+          <Property Name="address" Type="nvarchar" MaxLength="100" />
+          <Property Name="city" Type="nvarchar" MaxLength="100" />
+          <Property Name="province" Type="nvarchar" MaxLength="100" />
+          <Property Name="postalcode" Type="nvarchar" MaxLength="100" />
+          <Property Name="country" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="ShiftRecord">
+          <Key>
+            <PropertyRef Name="recordId" />
+          </Key>
+          <Property Name="volunteerId" Type="int" />
+          <Property Name="recordId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="teamName" Type="nvarchar" MaxLength="100" />
+          <Property Name="startOn" Type="datetime" Nullable="false" />
+          <Property Name="endOn" Type="datetime" />
+          <Property Name="createOn" Type="datetime" Nullable="false" />
+          <Property Name="createBy" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="modifiedOn" Type="datetime" Nullable="false" />
+          <Property Name="modifiedBy" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="earnedBucks" Type="numeric" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="earnHours" Type="numeric" Nullable="false" Scale="2" />
+        </EntityType>
+        <EntityType Name="Volunteer">
+          <Key>
+            <PropertyRef Name="volunteerId" />
+          </Key>
+          <Property Name="volunteerId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="constituentCode" Type="nvarchar" MaxLength="10" />
+          <Property Name="title" Type="nvarchar" MaxLength="10" />
+          <Property Name="firstName" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="lastName" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="nickName" Type="nvarchar" MaxLength="50" />
+          <Property Name="birthday" Type="date" />
+          <Property Name="status" Type="nvarchar" MaxLength="20" />
+          <Property Name="gender" Type="nvarchar" MaxLength="10" />
+          <Property Name="homePhone" Type="nvarchar" MaxLength="20" />
+          <Property Name="cellPhone" Type="nvarchar" MaxLength="20" />
+          <Property Name="createOn" Type="datetime" Nullable="false" />
+          <Property Name="createBy" Type="nvarchar" Nullable="false" MaxLength="256" />
+          <Property Name="modifiedOn" Type="datetime" Nullable="false" />
+          <Property Name="modifiedBy" Type="nvarchar" MaxLength="256" />
+          <Property Name="activatedOn" Type="datetime" />
+          <Property Name="deactivatedOn" Type="datetime" />
+          <Property Name="note" Type="nvarchar" />
+          <Property Name="token" Type="nvarchar" MaxLength="100" />
+          <Property Name="email" Type="nvarchar" MaxLength="256" />
+          <Property Name="orientation" Type="nvarchar" MaxLength="20" />
+          <Property Name="transitPass" Type="nvarchar" MaxLength="512" />
+          <Property Name="importID" Type="nvarchar" MaxLength="512" />
+        </EntityType>
+        <Association Name="FK_EMERGENC_REFERENCE_VOLUNTEE">
+          <End Role="Volunteer" Type="FVTSModel1.Store.Volunteer" Multiplicity="0..1" />
+          <End Role="EmergencyContact" Type="FVTSModel1.Store.EmergencyContact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Volunteer">
+              <PropertyRef Name="volunteerId" />
+            </Principal>
+            <Dependent Role="EmergencyContact">
+              <PropertyRef Name="volunteerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LOCATION_REFERENCE_VOLUNTEE">
+          <End Role="Volunteer" Type="FVTSModel1.Store.Volunteer" Multiplicity="0..1" />
+          <End Role="Location" Type="FVTSModel1.Store.Location" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Volunteer">
+              <PropertyRef Name="volunteerId" />
+            </Principal>
+            <Dependent Role="Location">
+              <PropertyRef Name="volunteerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SHIFTREC_RECORDS_VOLUNTEE">
+          <End Role="Volunteer" Type="FVTSModel1.Store.Volunteer" Multiplicity="0..1" />
+          <End Role="ShiftRecord" Type="FVTSModel1.Store.ShiftRecord" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Volunteer">
+              <PropertyRef Name="volunteerId" />
+            </Principal>
+            <Dependent Role="ShiftRecord">
+              <PropertyRef Name="volunteerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="FVTSModel1" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="FVTSEntities" p1:LazyLoadingEnabled="true">
+          <EntitySet Name="Definitions" EntityType="FVTSModel1.Definition" />
+          <EntitySet Name="EmergencyContacts" EntityType="FVTSModel1.EmergencyContact" />
+          <EntitySet Name="Locations" EntityType="FVTSModel1.Location" />
+          <EntitySet Name="ShiftRecords" EntityType="FVTSModel1.ShiftRecord" />
+          <EntitySet Name="Volunteers" EntityType="FVTSModel1.Volunteer" />
+          <AssociationSet Name="FK_EMERGENC_REFERENCE_VOLUNTEE" Association="FVTSModel1.FK_EMERGENC_REFERENCE_VOLUNTEE">
+            <End Role="Volunteer" EntitySet="Volunteers" />
+            <End Role="EmergencyContact" EntitySet="EmergencyContacts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LOCATION_REFERENCE_EMERGENC" Association="FVTSModel1.FK_LOCATION_REFERENCE_EMERGENC">
+            <End Role="EmergencyContact" EntitySet="EmergencyContacts" />
+            <End Role="Location" EntitySet="Locations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_LOCATION_REFERENCE_VOLUNTEE" Association="FVTSModel1.FK_LOCATION_REFERENCE_VOLUNTEE">
+            <End Role="Volunteer" EntitySet="Volunteers" />
+            <End Role="Location" EntitySet="Locations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SHIFTREC_RECORDS_VOLUNTEE" Association="FVTSModel1.FK_SHIFTREC_RECORDS_VOLUNTEE">
+            <End Role="Volunteer" EntitySet="Volunteers" />
+            <End Role="ShiftRecord" EntitySet="ShiftRecords" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Definition">
+          <Key>
+            <PropertyRef Name="definitionId" />
+          </Key>
+          <Property Name="definitionId" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="displayName" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="keyName" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="keyValue" Type="String" Nullable="false" MaxLength="512" Unicode="true" FixedLength="false" />
+          <Property Name="keyGroup" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="sequence" Type="Int32" />
+        </EntityType>
+        <EntityType Name="EmergencyContact">
+          <Key>
+            <PropertyRef Name="contactId" />
+          </Key>
+          <Property Name="contactId" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="volunteerId" Type="Int32" />
+          <Property Name="relationship" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="emergencyPhone" Type="String" MaxLength="20" Unicode="true" FixedLength="false" />
+          <Property Name="comment" MaxLength="2048" FixedLength="false" Unicode="true" Type="String" />
+          <Property Name="createDate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="Volunteer" Relationship="FVTSModel1.FK_EMERGENC_REFERENCE_VOLUNTEE" FromRole="EmergencyContact" ToRole="Volunteer" />
+          <NavigationProperty Name="Locations" Relationship="FVTSModel1.FK_LOCATION_REFERENCE_EMERGENC" FromRole="EmergencyContact" ToRole="Location" />
+          <Property Type="String" Name="contactName" MaxLength="256" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Location">
+          <Key>
+            <PropertyRef Name="locationId" />
+          </Key>
+          <Property Name="locationId" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="volunteerId" Type="Int32" />
+          <Property Name="contactId" Type="Int32" />
+          <Property Name="locationType" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="address" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="city" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="province" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="postalcode" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="EmergencyContact" Relationship="FVTSModel1.FK_LOCATION_REFERENCE_EMERGENC" FromRole="Location" ToRole="EmergencyContact" />
+          <NavigationProperty Name="Volunteer" Relationship="FVTSModel1.FK_LOCATION_REFERENCE_VOLUNTEE" FromRole="Location" ToRole="Volunteer" />
+          <Property Type="String" Name="country" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="ShiftRecord">
+          <Key>
+            <PropertyRef Name="recordId" />
+          </Key>
+          <Property Name="volunteerId" Type="Int32" />
+          <Property Name="recordId" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="teamName" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="startOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="endOn" Type="DateTime" Precision="3" />
+          <Property Name="createOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="createBy" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="modifiedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="modifiedBy" Type="String" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Name="earnedBucks" Type="Decimal" Nullable="false" Precision="10" Scale="2" />
+          <Property Name="earnHours" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <NavigationProperty Name="Volunteer" Relationship="FVTSModel1.FK_SHIFTREC_RECORDS_VOLUNTEE" FromRole="ShiftRecord" ToRole="Volunteer" />
+        </EntityType>
+        <EntityType Name="Volunteer">
+          <Key>
+            <PropertyRef Name="volunteerId" />
+          </Key>
+          <Property Name="volunteerId" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="constituentCode" Type="String" MaxLength="10" Unicode="true" FixedLength="false" DefaultValue="" />
+          <Property Name="title" Type="String" MaxLength="10" Unicode="true" FixedLength="false" />
+          <Property Name="firstName" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="lastName" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="nickName" Type="String" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Name="birthday" Type="DateTime" Precision="0" />
+          <Property Name="status" Type="String" MaxLength="20" Unicode="true" FixedLength="false" />
+          <Property Name="gender" Type="String" MaxLength="10" Unicode="true" FixedLength="false" DefaultValue="Unknown" />
+          <Property Name="homePhone" Type="String" MaxLength="20" Unicode="true" FixedLength="false" />
+          <Property Name="cellPhone" Type="String" MaxLength="20" Unicode="true" FixedLength="false" />
+          <Property Name="createOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="createBy" Type="String" Nullable="false" MaxLength="256" Unicode="true" FixedLength="false" />
+          <Property Name="modifiedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="modifiedBy" Type="String" MaxLength="256" Unicode="true" FixedLength="false" />
+          <Property Name="activatedOn" Type="DateTime" Precision="3" />
+          <Property Name="deactivatedOn" Type="DateTime" Precision="3" />
+          <Property Name="note" Type="String" MaxLength="4000" Unicode="true" FixedLength="false" DefaultValue="&quot;&quot;" />
+          <Property Name="token" Type="String" MaxLength="100" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="EmergencyContacts" Relationship="FVTSModel1.FK_EMERGENC_REFERENCE_VOLUNTEE" FromRole="Volunteer" ToRole="EmergencyContact" />
+          <NavigationProperty Name="Locations" Relationship="FVTSModel1.FK_LOCATION_REFERENCE_VOLUNTEE" FromRole="Volunteer" ToRole="Location" />
+          <NavigationProperty Name="ShiftRecords" Relationship="FVTSModel1.FK_SHIFTREC_RECORDS_VOLUNTEE" FromRole="Volunteer" ToRole="ShiftRecord" />
+          <Property Type="String" Name="email" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="orientation" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="transitPass" MaxLength="512" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="importID" MaxLength="512" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <Association Name="FK_EMERGENC_REFERENCE_VOLUNTEE">
+          <End Role="Volunteer" Type="FVTSModel1.Volunteer" Multiplicity="0..1" />
+          <End Role="EmergencyContact" Type="FVTSModel1.EmergencyContact" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Volunteer">
+              <PropertyRef Name="volunteerId" />
+            </Principal>
+            <Dependent Role="EmergencyContact">
+              <PropertyRef Name="volunteerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LOCATION_REFERENCE_EMERGENC">
+          <End Role="EmergencyContact" Type="FVTSModel1.EmergencyContact" Multiplicity="0..1" />
+          <End Role="Location" Type="FVTSModel1.Location" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="EmergencyContact">
+              <PropertyRef Name="contactId" />
+            </Principal>
+            <Dependent Role="Location">
+              <PropertyRef Name="contactId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_LOCATION_REFERENCE_VOLUNTEE">
+          <End Role="Volunteer" Type="FVTSModel1.Volunteer" Multiplicity="0..1" />
+          <End Role="Location" Type="FVTSModel1.Location" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Volunteer">
+              <PropertyRef Name="volunteerId" />
+            </Principal>
+            <Dependent Role="Location">
+              <PropertyRef Name="volunteerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SHIFTREC_RECORDS_VOLUNTEE">
+          <End Role="Volunteer" Type="FVTSModel1.Volunteer" Multiplicity="0..1" />
+          <End Role="ShiftRecord" Type="FVTSModel1.ShiftRecord" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Volunteer">
+              <PropertyRef Name="volunteerId" />
+            </Principal>
+            <Dependent Role="ShiftRecord">
+              <PropertyRef Name="volunteerId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="FVTSModel1StoreContainer" CdmEntityContainer="FVTSEntities">
+          <EntitySetMapping Name="Definitions">
+            <EntityTypeMapping TypeName="FVTSModel1.Definition">
+              <MappingFragment StoreEntitySet="Definition">
+                <ScalarProperty Name="definitionId" ColumnName="definitionId" />
+                <ScalarProperty Name="displayName" ColumnName="displayName" />
+                <ScalarProperty Name="keyName" ColumnName="keyName" />
+                <ScalarProperty Name="keyValue" ColumnName="keyValue" />
+                <ScalarProperty Name="keyGroup" ColumnName="keyGroup" />
+                <ScalarProperty Name="sequence" ColumnName="sequence" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmergencyContacts">
+            <EntityTypeMapping TypeName="FVTSModel1.EmergencyContact">
+              <MappingFragment StoreEntitySet="EmergencyContact">
+                <ScalarProperty Name="comment" ColumnName="comment" />
+                <ScalarProperty Name="contactName" ColumnName="contactName" />
+                <ScalarProperty Name="contactId" ColumnName="contactId" />
+                <ScalarProperty Name="volunteerId" ColumnName="volunteerId" />
+                <ScalarProperty Name="relationship" ColumnName="relationship" />
+                <ScalarProperty Name="emergencyPhone" ColumnName="emergencyPhone" />
+                <ScalarProperty Name="createDate" ColumnName="createDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Locations">
+            <EntityTypeMapping TypeName="FVTSModel1.Location">
+              <MappingFragment StoreEntitySet="Location">
+                <ScalarProperty Name="country" ColumnName="country" />
+                <ScalarProperty Name="locationId" ColumnName="locationId" />
+                <ScalarProperty Name="volunteerId" ColumnName="volunteerId" />
+                <ScalarProperty Name="contactId" ColumnName="contactId" />
+                <ScalarProperty Name="locationType" ColumnName="locationType" />
+                <ScalarProperty Name="address" ColumnName="address" />
+                <ScalarProperty Name="city" ColumnName="city" />
+                <ScalarProperty Name="province" ColumnName="province" />
+                <ScalarProperty Name="postalcode" ColumnName="postalcode" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ShiftRecords">
+            <EntityTypeMapping TypeName="FVTSModel1.ShiftRecord">
+              <MappingFragment StoreEntitySet="ShiftRecord">
+                <ScalarProperty Name="volunteerId" ColumnName="volunteerId" />
+                <ScalarProperty Name="recordId" ColumnName="recordId" />
+                <ScalarProperty Name="teamName" ColumnName="teamName" />
+                <ScalarProperty Name="startOn" ColumnName="startOn" />
+                <ScalarProperty Name="endOn" ColumnName="endOn" />
+                <ScalarProperty Name="createOn" ColumnName="createOn" />
+                <ScalarProperty Name="createBy" ColumnName="createBy" />
+                <ScalarProperty Name="modifiedOn" ColumnName="modifiedOn" />
+                <ScalarProperty Name="modifiedBy" ColumnName="modifiedBy" />
+                <ScalarProperty Name="earnedBucks" ColumnName="earnedBucks" />
+                <ScalarProperty Name="earnHours" ColumnName="earnHours" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Volunteers">
+            <EntityTypeMapping TypeName="FVTSModel1.Volunteer">
+              <MappingFragment StoreEntitySet="Volunteer">
+                <ScalarProperty Name="importID" ColumnName="importID" />
+                <ScalarProperty Name="transitPass" ColumnName="transitPass" />
+                <ScalarProperty Name="orientation" ColumnName="orientation" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="volunteerId" ColumnName="volunteerId" />
+                <ScalarProperty Name="constituentCode" ColumnName="constituentCode" />
+                <ScalarProperty Name="title" ColumnName="title" />
+                <ScalarProperty Name="firstName" ColumnName="firstName" />
+                <ScalarProperty Name="lastName" ColumnName="lastName" />
+                <ScalarProperty Name="nickName" ColumnName="nickName" />
+                <ScalarProperty Name="birthday" ColumnName="birthday" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="gender" ColumnName="gender" />
+                <ScalarProperty Name="homePhone" ColumnName="homePhone" />
+                <ScalarProperty Name="cellPhone" ColumnName="cellPhone" />
+                <ScalarProperty Name="createOn" ColumnName="createOn" />
+                <ScalarProperty Name="createBy" ColumnName="createBy" />
+                <ScalarProperty Name="modifiedOn" ColumnName="modifiedOn" />
+                <ScalarProperty Name="modifiedBy" ColumnName="modifiedBy" />
+                <ScalarProperty Name="activatedOn" ColumnName="activatedOn" />
+                <ScalarProperty Name="deactivatedOn" ColumnName="deactivatedOn" />
+                <ScalarProperty Name="note" ColumnName="note" />
+                <ScalarProperty Name="token" ColumnName="token" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="True" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

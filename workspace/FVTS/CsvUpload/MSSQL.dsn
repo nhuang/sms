@@ -1,0 +1,8 @@
+[ODBC]
+DRIVER=SQL Server
+UID=sa
+DATABASE=FVTS
+WSID=NOAHPC
+APP=PowerDesigner
+SERVER=.
+Description=Local SQL Server
